@@ -28,7 +28,7 @@ export default function Home() {
               Agendar Demonstração Gratuita
             </button>
             <Link
-              href="#features"
+              href="/login"
               className="w-full sm:w-auto border-2 border-zinc-800 hover:border-orange-500 px-12 py-5 rounded-md font-black transition-all uppercase tracking-widest text-sm text-center inline-block group"
             >
               <span className="group-hover:text-orange-500 transition-colors">

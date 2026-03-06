@@ -82,8 +82,8 @@ const currentYear = new Date().getFullYear();
                 </thead>
                 <tbody className="divide-y divide-neutral-900">
                   {[
-                    { nome: "Marcos Almeida", plano: "Anual", status: "Treino Atualizado" },
-                    { nome: "Julia Paiva", plano: "Mensal", status: "Pagamento Confirmado" },
+                    { nome: "Rafinha Tanajura", plano: "Bunda Infinita", status: "Treino de Gluteo Atualizado" },
+                    { nome: "João Salvan", plano: "Mensal", status: "Pagamento Confirmado" },
                     { nome: "Ricardo Santos", plano: "Trimestral", status: "Nova Ficha" },
                   ].map((row, i) => (
                     <tr key={i} className="group hover:bg-neutral-900/30 transition-colors">
