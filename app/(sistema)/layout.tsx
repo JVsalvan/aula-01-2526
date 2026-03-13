@@ -1,38 +1,36 @@
 import Footer from "@/app/components/Footer"
 import Header from "@/app/components/Header"
+import SidebarAcademia from "@/app/components/Sidebar" // Importe sua Sidebar aqui
 
-export default function SisitemaLayout({
+export default function SistemaLayout({
     children
-}:{
-    children:React.ReactNode
-}){
-    return(
-             
-            <div className="flex min-h-screen flex-col">
-              
-              {/* Se sua Sidebar for fixa/lateral, ela fica fora do fluxo flex-col do main, 
-                  mas aqui vamos assumir a estrutura que você mandou */}
-              {/* <Sidebar /> */}
-    
-              {/* O invólucro do conteúdo principal */}
-              <div className="flex flex-1 flex-col">
+}: {
+    children: React.ReactNode
+}) {
+    return (
+        /* Mudamos para flex-row para a Sidebar ficar ao lado do conteúdo */
+        <div className="flex min-h-screen flex-row bg-neutral-950">
+            
+            {/* 1. Sidebar fixa na esquerda */}
+            <SidebarAcademia />
+
+            {/* 2. Lado direito: Todo o conteúdo do sistema */}
+            <div className="flex flex-1 flex-col">
                 
+                {/* Header no topo */}
                 <Header />
-    
-                {/* O flex-1 aqui faz o main "esticar" para empurrar o footer */}
-                <main className="flex-1 flex flex-col items-center justify-center p-4 sm:p-8">
-                  <div className="w-full max-w-7xl">
-                    {children}
-                  </div>
+
+                {/* Conteúdo Principal (Main) */}
+                <main className="flex-1 flex flex-col items-center p-4 sm:p-10 overflow-y-auto">
+                    <div className="w-full max-w-7xl">
+                        {children}
+                    </div>
                 </main>
-    
-                <Footer/>
-              </div>
-    
+
+                {/* Footer no final */}
+                <Footer />
             </div>
 
+        </div>
     )
-     
-       
-         
 }
