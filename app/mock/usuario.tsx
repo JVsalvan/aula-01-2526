@@ -34,6 +34,18 @@ export class UsuarioMock {
 
     }
 
+    // Dentro da class UsuarioMock...
+
+static async alterarStatus(codigo: number): Promise<void> {
+    const usuario = this.usuarioDB.find(u => u.codigo === codigo);
+    if (usuario) {
+        usuario.ativo = !usuario.ativo; // Inverte o booleano
+        console.log(`Status do Professor ID ${codigo} alterado para: ${usuario.ativo}`);
+    } else {
+        throw new Error("Professor não encontrado");
+    }
+}
+
     static async buscarPorId(codigo: Number): Promise<Usuario | undefined> {
 
         return this.usuarioDB.find(u => u.codigo === codigo);
