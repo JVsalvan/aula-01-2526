@@ -4,10 +4,17 @@ import { Usuario } from "@/app/context/AuthContext";
 import Link from "next/link";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { UsuarioMock } from "@/app/mock/usuario";
 
-export default function Usuarioform() {
+interface UsuarioFormProps{
+    usuariosExistente?: Usuario
+}
+
+export default function Usuarioform({usuariosExistente}: UsuarioFormProps) {
     const router = useRouter();
-    const [usuario, setUsuario] = useState<Usuario>(new Usuario(0, '', '', true));
+    const [usuario, setUsuario] = useState<Usuario>(usuariosExistente||new Usuario(0, '', '', true));
+
+
 
     const handleChange = (campo: 'name' | 'cpf', valor: string) => {
         setUsuario(prev =>
@@ -21,9 +28,13 @@ export default function Usuarioform() {
     }
 
     const handlerSalvar = async (formData: FormData) => {
+
+     
+        await UsuarioMock.salvar(usuario);
+        alert("Usuario salvo com sucesso!")
         // Aqui você chamaria sua API
         console.log("Dados salvos:", usuario);
-        router.push("/usuarios"); // Redireciona para a listagem
+        router.push("/usuarios"); 
     }
 
     return (

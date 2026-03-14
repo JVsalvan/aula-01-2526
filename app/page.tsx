@@ -1,6 +1,8 @@
 import Link from "next/link";
 
 export default function Home() {
+
+ 
   return (
     <main className="flex-1 bg-neutral-950 text-white overflow-x-hidden">
 
