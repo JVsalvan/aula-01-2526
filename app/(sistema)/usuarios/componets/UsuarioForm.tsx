@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { UsuarioMock } from "@/app/mock/usuario";
+import axios from "axios";
 
 interface UsuarioFormProps{
     usuariosExistente?: Usuario
@@ -12,17 +13,17 @@ interface UsuarioFormProps{
 
 export default function Usuarioform({usuariosExistente}: UsuarioFormProps) {
     const router = useRouter();
-    const [usuario, setUsuario] = useState<Usuario>(usuariosExistente||new Usuario(0, '', '', true));
+    const [usuario, setUsuario] = useState<Usuario>(usuariosExistente||new Usuario(null, '', '', "ATIVO"));
 
 
 
-    const handleChange = (campo: 'name' | 'cpf', valor: string) => {
+    const handleChange = (campo: 'name' | 'email', valor: string) => {
         setUsuario(prev =>
             new Usuario(
-                prev.codigo,
+                prev.id,
                 campo === 'name' ? valor : prev.name,
-                campo === 'cpf' ? valor : prev.cpf,
-                prev.ativo
+                campo === 'email' ? valor : prev.email,
+                prev.status
             )
         )
     }
@@ -30,10 +31,11 @@ export default function Usuarioform({usuariosExistente}: UsuarioFormProps) {
     const handlerSalvar = async (formData: FormData) => {
 
      
-        await UsuarioMock.salvar(usuario);
-        alert("Usuario salvo com sucesso!")
+       var dadosResult = await axios.post<number>('http://localhost:8080/usuarios',usuario);
+        alert("Usuario salvo com sucesso! Codigo:" + dadosResult.data)
         // Aqui você chamaria sua API
         console.log("Dados salvos:", usuario);
+
         router.push("/usuarios"); 
     }
 
@@ -56,14 +58,14 @@ export default function Usuarioform({usuariosExistente}: UsuarioFormProps) {
                     {/* NOME COMPLETO */}
                     <div className="flex flex-col gap-2">
                         <label className="text-[10px] font-black text-neutral-600 uppercase tracking-[0.2em]">
-                            Nome Completo
+                            Nome
                         </label>
                         <input
-                            type="text"
+                            type="name"
                             required
                             value={usuario.name}
                             onChange={(e) => handleChange('name', e.target.value)}
-                            placeholder="Rafael Cândido"
+                             
                             className="bg-neutral-950 border border-neutral-800 text-white text-sm px-4 py-3 rounded-sm focus:outline-none focus:border-orange-500 focus:ring-1 focus:ring-orange-500/20 transition-all placeholder:text-neutral-700"
                         />
                     </div>
@@ -71,15 +73,15 @@ export default function Usuarioform({usuariosExistente}: UsuarioFormProps) {
                     {/* CPF */}
                     <div className="flex flex-col gap-2">
                         <label className="text-[10px] font-black text-neutral-600 uppercase tracking-[0.2em]">
-                            Documento CPF
+                          Email
                         </label>
                         <input
                             type="text"
                             required
-                            maxLength={14}
-                            value={usuario.cpf}
-                            onChange={(e) => handleChange('cpf', e.target.value)}
-                            placeholder="000.000.000-00"
+                           
+                            value={usuario.email}
+                            onChange={(e) => handleChange('email', e.target.value)}
+                            placeholder="seu@email.com"
                             className="bg-neutral-950 border border-neutral-800 text-white text-sm px-4 py-3 rounded-sm focus:outline-none focus:border-orange-500 focus:ring-1 focus:ring-orange-500/20 transition-all placeholder:text-neutral-700"
                         />
                     </div>

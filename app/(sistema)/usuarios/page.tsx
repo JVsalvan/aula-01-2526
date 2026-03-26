@@ -4,6 +4,7 @@ import { Usuario } from "@/app/context/AuthContext";
 import { UsuarioMock } from "@/app/mock/usuario";
 import { useEffect, useState } from "react";
 import Link from "next/link"; // Import correto do Next.js
+import axios from "axios";
 
 export default function Usuarios() {
   const [usuarios, setUsuarios] = useState<Usuario[]>([]);
@@ -14,8 +15,14 @@ export default function Usuarios() {
 
   const carregarDados = async () => {
     try {
-      const dados = await UsuarioMock.ListarTodos();
-      setUsuarios(dados);
+      const dados = await axios.get<Usuario[]>('http://localhost:8080/usuarios');
+      if(dados.status!==200){
+        alert("Erro ao carregar dados!")
+ 
+      }
+      setUsuarios(dados.data);
+
+
     } catch (error) {
       console.error(error);
     }
@@ -25,8 +32,8 @@ export default function Usuarios() {
     try {
       // Mantendo sua lógica de inversão de status
       setUsuarios(usuariosAtuais => usuariosAtuais.map(u =>
-        u.codigo === user.codigo
-          ? { ...u, ativo: !u.ativo } // Simplifiquei a criação mantendo os dados
+        u.id === user.id
+          ? { ...u, ativo: !u.status} // Simplifiquei a criação mantendo os dados
           : u
       ));
     } catch (error) {
@@ -67,22 +74,22 @@ export default function Usuarios() {
           </thead>
           <tbody className="divide-y divide-neutral-900">
             {usuarios.map((user) => (
-              <tr key={user.codigo} className="group hover:bg-neutral-900/40 transition-colors">
-                <td className="p-4 font-mono text-neutral-500 text-xs">#{user.codigo}</td>
+              <tr key={user.id} className="group hover:bg-neutral-900/40 transition-colors">
+                <td className="p-4 font-mono text-neutral-500 text-xs">#{user.id}</td>
                 <td className="p-4 font-medium text-neutral-200">{user.name}</td>
-                <td className="p-4 text-neutral-500">{user.cpf}</td>
+                <td className="p-4 text-neutral-500">{user.email}</td>
                 <td className="p-4">
                   <span className={`text-[10px] font-bold uppercase tracking-tighter px-2 py-1 rounded-full ${
-                    user.ativo 
+                    user.status 
                     ? 'bg-emerald-500/10 text-emerald-500' 
                     : 'bg-red-500/10 text-red-500'
                   }`}>
-                    {user.ativo ? '● Ativo' : '○ Inativo'}
+                    {user.status ? '● Ativo' : '○ Inativo'}
                   </span>
                 </td>
                 <td className="p-4 text-right space-x-4">
                   <Link 
-                    href={`/usuarios/${user.codigo}/editar`}
+                    href={`/usuarios/${user.id}/editar`}
                     className="text-[10px] font-bold text-neutral-500 hover:text-white uppercase tracking-widest transition-colors"
                   >
                     Editar
@@ -90,12 +97,12 @@ export default function Usuarios() {
                   <button 
                     onClick={() => handlerAlterarStatus(user)}
                     className={`text-[10px] font-bold uppercase tracking-widest transition-colors ${
-                      user.ativo 
+                      user.status 
                       ? 'text-red-500/50 hover:text-red-500' 
                       : 'text-emerald-500/50 hover:text-emerald-500'
                     }`}
                   >
-                    {user.ativo ? 'Inativar' : 'Ativar'}
+                    {user.status ? 'Inativar' : 'Ativar'}
                   </button>
                 </td>
               </tr>

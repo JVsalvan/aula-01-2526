@@ -3,9 +3,9 @@ import { Usuario } from "../context/AuthContext";
 export class UsuarioMock {
 
     private static usuarioDB: Usuario[] = [
-        new Usuario(1, "Professor joao", "0000", true),
-        new Usuario(2, "Paulo", "0000", true),
-        new Usuario(3, " rafa", "0000", true),
+        new Usuario(1, "Professor joao", "0000",  "ATIVO"),
+        new Usuario(2, "Paulo", "0000",  "ATIVO"),
+        new Usuario(3, " rafa", "0000",  "ATIVO"),
     ];
 
 
@@ -15,20 +15,20 @@ export class UsuarioMock {
 
     static async salvar(usuario: Usuario): Promise<void> {
 
-        const indexExistente = this.usuarioDB.findIndex(u => u.codigo === usuario.codigo);
+        const indexExistente = this.usuarioDB.findIndex(u => u.id === usuario.id);
 
         if (indexExistente === -1) {
 
 
-            const novoCodigo = Math.max(...this.usuarioDB.map(u => u.codigo)) + 1;
-            usuario.codigo = novoCodigo;
+            const novoCodigo = Math.max(...this.usuarioDB.map(u => u.id??0)) + 1;
+            usuario.id = novoCodigo;
             this.usuarioDB.push(usuario);
             console.log(`Usuario Id ${novoCodigo} Salvo com sucesso`);
         }else {
             this.usuarioDB[indexExistente].name = usuario.name;
-            this.usuarioDB[indexExistente].cpf = usuario.cpf;
+            this.usuarioDB[indexExistente].email = usuario.email;
 
-           console.log(`Usuario Id ${usuario.codigo} Atualizado com sucesso`);
+           console.log(`Usuario Id ${usuario.id} Atualizado com sucesso`);
 
         }
 
@@ -37,10 +37,10 @@ export class UsuarioMock {
     // Dentro da class UsuarioMock...
 
 static async alterarStatus(codigo: number): Promise<void> {
-    const usuario = this.usuarioDB.find(u => u.codigo === codigo);
+    const usuario = this.usuarioDB.find(u => u.id === codigo);
     if (usuario) {
-        usuario.ativo = !usuario.ativo; // Inverte o booleano
-        console.log(`Status do Professor ID ${codigo} alterado para: ${usuario.ativo}`);
+        usuario.status = usuario.status; // sInverte o booleano
+        console.log(`Status do Professor ID ${codigo} alterado para: ${usuario.id}`);
     } else {
         throw new Error("Professor não encontrado");
     }
@@ -48,7 +48,7 @@ static async alterarStatus(codigo: number): Promise<void> {
 
     static async buscarPorId(codigo: Number): Promise<Usuario | undefined> {
 
-        return this.usuarioDB.find(u => u.codigo === codigo);
+        return this.usuarioDB.find(u => u.id === codigo);
     }
 
 }

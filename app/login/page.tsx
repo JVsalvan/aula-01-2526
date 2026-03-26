@@ -3,6 +3,12 @@
 import { useRouter } from "next/navigation";
 import { useAuth, Usuario } from "@/app/context/AuthContext"; // Ajuste o caminho
 import { useTransition } from "react";
+import { log } from "console";
+import axios from "axios";
+
+interface LoginResponse{
+    token:string
+}
 
 export default function LoginPage() {
     const router = useRouter();
@@ -17,15 +23,38 @@ export default function LoginPage() {
         // Usamos startTransition para que o React saiba que isso é uma mudança de estado de UI
         startTransition(async () => {
             try {
+                debugger;
+
+
+            // var loginResult = await fetch("http://localhost:8080/auth/login",{
+            //         method : "POST", 
+            //         headers:{
+            //            'content-Type':'application/json'
+            //         },
+            //         body: JSON.stringify({email:email,senha:senha})
+            //     });
+            //     if(!loginResult)
+            //         alert("Usuario ou senha invalido!")
+            //     return;
+
+            var loginResult = await axios.post<LoginResponse>('http://localhost:8080/auth/login',{email:email,senha:senha});
+            if(loginResult.status !== 200){
+                alert("Usuario ou senha invalido")
+                return;
+            
+            }
+
+        
+
                 // Simulação de delay de rede
                 await new Promise(resolve => setTimeout(resolve, 1000));
 
                 // Corrigido para bater com o seu construtor da classe Usuario
                 // Supondo: new Usuario(codigo, name, cpf?, ativo?)
-                const usuarioMock = new Usuario (1, "Professor joao","0000",true)
+                const usuarioMock = new Usuario (1, "Professor joao","0000","true")
                 const tokenMock = "jwt-sample-token-123";
 
-                login(usuarioMock, tokenMock);
+                login(usuarioMock, loginResult.data.token);
                 
                 console.log(`Autenticado: ${email}`);
                 router.push("/home");

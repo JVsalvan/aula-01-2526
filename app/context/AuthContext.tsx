@@ -4,10 +4,10 @@ import { createContext, ReactNode, useContext, useState } from "react";
 
 export class Usuario {
     constructor(
-        public codigo: number,
+        public id: number|null,
         public name: string,
-        public cpf: string,
-        public ativo: boolean
+        public email: string,
+        public status: string
 
     ) { }
 }
