@@ -16,9 +16,9 @@ export default function Usuarios() {
   const carregarDados = async () => {
     try {
       const dados = await axios.get<Usuario[]>('http://localhost:8080/usuarios');
-      if(dados.status!==200){
+      if (dados.status !== 200) {
         alert("Erro ao carregar dados!")
- 
+
       }
       setUsuarios(dados.data);
 
@@ -28,14 +28,24 @@ export default function Usuarios() {
     }
   };
 
-  const handlerAlterarStatus = async (user: Usuario) => {
+  const handlerAlterarStatus = async (usuario: Usuario) => {
     try {
-      // Mantendo sua lógica de inversão de status
-      setUsuarios(usuariosAtuais => usuariosAtuais.map(u =>
-        u.id === user.id
-          ? { ...u, ativo: !u.status} // Simplifiquei a criação mantendo os dados
-          : u
-      ));
+      var novoStatus = {};
+      if (usuario.status === "ATIVO") {
+        novoStatus = { status: "INATIVO" }
+      } else {
+        novoStatus = { status: "ATIVO" }
+      }
+
+
+
+      var dadosResult = await axios.put<number>('http://localhost:8080/usuarios/' + usuario.id + '/AlterarStatus', novoStatus);
+      carregarDados();
+      alert("Usuario salvo com sucesso! Codigo:" + dadosResult.data)
+      // Aqui você chamaria sua API
+      console.log("Dados salvos:", usuario);
+
+
     } catch (error) {
       alert("Erro ao alterar o status do usuario");
     }
@@ -51,9 +61,9 @@ export default function Usuarios() {
             Gestão de <span className="font-semibold text-orange-500">Usuários</span>
           </h2>
         </div>
-        
-        <Link 
-          href="/usuarios/novo" 
+
+        <Link
+          href="/usuarios/novo"
           className="bg-white text-black px-6 py-2.5 rounded-sm font-bold text-xs uppercase tracking-widest hover:bg-orange-500 hover:text-white transition-all duration-300"
         >
           + Novo Usuário
@@ -79,35 +89,33 @@ export default function Usuarios() {
                 <td className="p-4 font-medium text-neutral-200">{user.name}</td>
                 <td className="p-4 text-neutral-500">{user.email}</td>
                 <td className="p-4">
-                  <span className={`text-[10px] font-bold uppercase tracking-tighter px-2 py-1 rounded-full ${
-                    user.status 
-                    ? 'bg-emerald-500/10 text-emerald-500' 
-                    : 'bg-red-500/10 text-red-500'
-                  }`}>
-                    {user.status ? '● Ativo' : '○ Inativo'}
+                  <span className={`text-[10px] font-bold uppercase tracking-tighter px-2 py-1 rounded-full ${user.status === 'ATIVO'
+                      ? 'bg-emerald-500/10 text-emerald-500'
+                      : 'bg-red-500/10 text-red-500'
+                    }`}>
+                    {user.status === 'ATIVO' ? '● Ativo' : '○ Inativo'}
                   </span>
                 </td>
                 <td className="p-4 text-right space-x-4">
-                  <Link 
+                  <Link
                     href={`/usuarios/${user.id}/editar`}
                     className="text-[10px] font-bold text-neutral-500 hover:text-white uppercase tracking-widest transition-colors"
                   >
                     Editar
                   </Link>
-                  <button 
+                  <button
                     onClick={() => handlerAlterarStatus(user)}
-                    className={`text-[10px] font-bold uppercase tracking-widest transition-colors ${
-                      user.status 
-                      ? 'text-red-500/50 hover:text-red-500' 
-                      : 'text-emerald-500/50 hover:text-emerald-500'
-                    }`}
+                    className={`text-[10px] font-bold uppercase tracking-widest transition-colors ${user.status === 'ATIVO'
+                        ? 'text-red-500/50 hover:text-red-500'
+                        : 'text-emerald-500/50 hover:text-emerald-500'
+                      }`}
                   >
-                    {user.status ? 'Inativar' : 'Ativar'}
+                    {user.status === 'ATIVO' ? 'Inativar' : 'Ativar'}
                   </button>
                 </td>
               </tr>
             ))}
-            
+
             {/* ESTADO VAZIO */}
             {usuarios.length === 0 && (
               <tr>

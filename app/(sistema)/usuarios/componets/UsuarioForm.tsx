@@ -30,11 +30,24 @@ export default function Usuarioform({usuariosExistente}: UsuarioFormProps) {
 
     const handlerSalvar = async (formData: FormData) => {
 
-     
-       var dadosResult = await axios.post<number>('http://localhost:8080/usuarios',usuario);
+        if(usuariosExistente){
+                  var dadosResult = await axios.put<number>('http://localhost:8080/usuarios/'+usuariosExistente.id,usuario);
         alert("Usuario salvo com sucesso! Codigo:" + dadosResult.data)
         // Aqui você chamaria sua API
         console.log("Dados salvos:", usuario);
+            
+
+        }else{
+                  var dadosResult = await axios.post<number>('http://localhost:8080/usuarios',usuario);
+        alert("Usuario salvo com sucesso! Codigo:" + dadosResult.data)
+        // Aqui você chamaria sua API
+        console.log("Dados salvos:", usuario);
+           
+    
+        }
+
+     
+ 
 
         router.push("/usuarios"); 
     }
