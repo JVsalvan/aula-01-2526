@@ -12,8 +12,8 @@ const pathname = usePathname();
       group: "Gestão Operacional",
       items: [
         { label: 'Dashboard', href: '/dashoboard' },
-        { label: 'Matrículas Ativas', href: '/usuarios' },
-        { label: 'Planos & Vendas', href: '/planos' },
+        { label: 'Gestão de Usuarios', href: '/usuarios' },
+        { label: 'Academias', href: '/academia' },
       ]
     },
     {

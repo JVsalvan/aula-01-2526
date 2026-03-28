@@ -24,7 +24,7 @@ public class AuthController {
     @Operation(description = "Valída senhas" , summary = "Login")
     public ResponseEntity<?> login (@RequestBody LoginRequest loginRequest){
 
-        if (loginRequest.email().equals("String@s") && loginRequest.senha().equals("String")){
+        if (loginRequest.email().equals("joaovitorsalvan3@gmail.com") && loginRequest.senha().equals("1234")){
 
             return ResponseEntity.ok( new LoginResponse("1234"));
         }
