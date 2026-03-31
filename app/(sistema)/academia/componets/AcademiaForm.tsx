@@ -5,12 +5,16 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import axios from "axios";
 
-// Definição da Classe Academia
+// Classe Academia atualizada com os novos campos
 export class Academia {
     constructor(
         public id: number | null,
         public name: string,
         public email: string,
+        public cnpj: string,
+        public telefone: string,
+        public localizacao: string,
+        public endereco: string,
         public status: string
     ) { }
 }
@@ -21,116 +25,143 @@ interface AcademiaFormProps {
 
 export default function AcademiaForm({ academiaExistente }: AcademiaFormProps) {
     const router = useRouter();
+    const [isPending, setIsPending] = useState(false);
     
-    // Inicializa o estado com a academia existente ou uma nova instância
     const [academia, setAcademia] = useState<Academia>(
-        academiaExistente || new Academia(null, '', '', "ATIVO")
+        academiaExistente || new Academia(null, '', '', '', '', '', '', "ATIVO")
     );
 
-    // Função de mudança de estado genérica
-    const handleChange = (campo: 'name' | 'email', valor: string) => {
-        setAcademia(prev =>
-            new Academia(
-                prev.id,
-                campo === 'name' ? valor : prev.name,
-                campo === 'email' ? valor : prev.email,
-                prev.status
-            )
-        )
+    // Tipagem atualizada para os novos campos
+    const handleChange = (campo: keyof Academia, valor: string) => {
+        setAcademia(prev => ({
+            ...prev,
+            [campo]: valor
+        } as Academia));
     }
 
-    // Handler de salvamento adaptado para axios e endpoints de academia
-    const handlerSalvar = async (formData: FormData) => {
+    const handlerSalvar = async (e: React.FormEvent) => {
+        e.preventDefault(); // Usando submit tradicional para controlar o estado de loading
+        setIsPending(true);
+
         try {
             let dadosResult;
-            
             if (academiaExistente && academiaExistente.id) {
-                // Lógica de Edição (PUT)
                 dadosResult = await axios.put<number>(`http://localhost:8080/academia/${academiaExistente.id}`, academia);
-                alert("Academia atualizada com sucesso! Código: " + dadosResult.data);
+                alert("Unidade atualizada! ID: " + dadosResult.data);
             } else {
-                // Lógica de Criação (POST)
                 dadosResult = await axios.post<number>('http://localhost:8080/academia', academia);
-                alert("Academia registrada com sucesso! Código: " + dadosResult.data);
+                alert("Unidade registrada! ID: " + dadosResult.data);
             }
 
-            console.log("Dados processados:", academia);
             router.push("/academia");
             router.refresh();
         } catch (error) {
-            console.error("Erro ao salvar academia:", error);
-            alert("Erro ao processar a requisição.");
+            console.error("Erro:", error);
+            alert("Erro ao processar requisição.");
+        } finally {
+            setIsPending(false);
         }
     }
 
     return (
-        <div className="max-w-2xl mx-auto space-y-8 animate-in fade-in duration-500">
-            {/* CABEÇALHO */}
+        <div className="max-w-4xl mx-auto space-y-8 animate-in fade-in duration-500">
             <header className="border-b border-neutral-800 pb-6">
                 <h1 className="text-orange-500 text-[10px] font-black uppercase tracking-[0.4em] mb-2">
                     Gestão Corporativa
                 </h1>
                 <h2 className="text-white text-4xl font-light tracking-tighter italic">
-                    {academiaExistente ? 'Editar' : 'Nova'} <span className="font-bold text-orange-500 underline decoration-1 underline-offset-8">Unidade</span>
+                    {academiaExistente ? 'Configurar' : 'Nova'} <span className="font-bold text-orange-500 underline decoration-1 underline-offset-8">Unidade</span>
                 </h2>
             </header>
 
-            {/* FORMULÁRIO */}
-            <form action={handlerSalvar} className="space-y-8 bg-neutral-900/20 p-8 border border-neutral-900 rounded-sm">
+            <form onSubmit={handlerSalvar} className="space-y-8 bg-neutral-900/20 p-8 border border-neutral-900 rounded-sm shadow-2xl shadow-black/50">
                 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                    {/* NOME DA ACADEMIA */}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-8">
+                    {/* NOME DA UNIDADE */}
                     <div className="flex flex-col gap-2">
-                        <label className="text-[10px] font-black text-neutral-600 uppercase tracking-[0.2em]">
-                            Nome da Unidade
-                        </label>
+                        <label className="text-[10px] font-black text-neutral-600 uppercase tracking-[0.2em]">Nome Identificador</label>
                         <input
-                            type="text"
-                            required
-                            value={academia.name}
+                            type="text" required value={academia.name}
                             onChange={(e) => handleChange('name', e.target.value)}
                             placeholder="Ex: Unidade Centro"
-                            className="bg-neutral-950 border border-neutral-800 text-white text-sm px-4 py-3 rounded-sm focus:outline-none focus:border-orange-500 focus:ring-1 focus:ring-orange-500/20 transition-all placeholder:text-neutral-700"
+                            className="bg-neutral-950 border border-neutral-800 text-white text-sm px-4 py-3 rounded-sm focus:outline-none focus:border-orange-500 transition-all placeholder:text-neutral-800"
                         />
                     </div>
 
-                    {/* EMAIL CORPORATIVO */}
+                    {/* EMAIL */}
                     <div className="flex flex-col gap-2">
-                        <label className="text-[10px] font-black text-neutral-600 uppercase tracking-[0.2em]">
-                            E-mail de Contato
-                        </label>
+                        <label className="text-[10px] font-black text-neutral-600 uppercase tracking-[0.2em]">E-mail de Contato</label>
                         <input
-                            type="email"
-                            required
-                            value={academia.email}
+                            type="email" required value={academia.email}
                             onChange={(e) => handleChange('email', e.target.value)}
                             placeholder="unidade@academia.com"
-                            className="bg-neutral-950 border border-neutral-800 text-white text-sm px-4 py-3 rounded-sm focus:outline-none focus:border-orange-500 focus:ring-1 focus:ring-orange-500/20 transition-all placeholder:text-neutral-700"
+                            className="bg-neutral-950 border border-neutral-800 text-white text-sm px-4 py-3 rounded-sm focus:outline-none focus:border-orange-500 transition-all placeholder:text-neutral-800"
+                        />
+                    </div>
+
+                    {/* CNPJ (NOVO) */}
+                    <div className="flex flex-col gap-2">
+                        <label className="text-[10px] font-black text-neutral-600 uppercase tracking-[0.2em]">CNPJ da Unidade</label>
+                        <input
+                            type="text" value={academia.cnpj}
+                            onChange={(e) => handleChange('cnpj', e.target.value)}
+                            placeholder="00.000.000/0001-00"
+                            className="bg-neutral-950 border border-neutral-800 text-white text-sm px-4 py-3 rounded-sm focus:outline-none focus:border-orange-500 transition-all placeholder:text-neutral-800"
+                        />
+                    </div>
+
+                    {/* TELEFONE (NOVO) */}
+                    <div className="flex flex-col gap-2">
+                        <label className="text-[10px] font-black text-neutral-600 uppercase tracking-[0.2em]">Telefone / WhatsApp</label>
+                        <input
+                            type="text" value={academia.telefone}
+                            onChange={(e) => handleChange('telefone', e.target.value)}
+                            placeholder="(11) 99999-9999"
+                            className="bg-neutral-950 border border-neutral-800 text-white text-sm px-4 py-3 rounded-sm focus:outline-none focus:border-orange-500 transition-all placeholder:text-neutral-800"
+                        />
+                    </div>
+
+                    {/* LOCALIZAÇÃO (NOVO) */}
+                    <div className="flex flex-col gap-2">
+                        <label className="text-[10px] font-black text-neutral-600 uppercase tracking-[0.2em]">Cidade / UF</label>
+                        <input
+                            type="text" value={academia.localizacao}
+                            onChange={(e) => handleChange('localizacao', e.target.value)}
+                            placeholder="Ex: São Paulo / SP"
+                            className="bg-neutral-950 border border-neutral-800 text-white text-sm px-4 py-3 rounded-sm focus:outline-none focus:border-orange-500 transition-all placeholder:text-neutral-800"
+                        />
+                    </div>
+
+                    {/* ENDEREÇO (NOVO) */}
+                    <div className="flex flex-col gap-2">
+                        <label className="text-[10px] font-black text-neutral-600 uppercase tracking-[0.2em]">Logradouro Completo</label>
+                        <input
+                            type="text" value={academia.endereco}
+                            onChange={(e) => handleChange('endereco', e.target.value)}
+                            placeholder="Rua, Número, Bairro"
+                            className="bg-neutral-950 border border-neutral-800 text-white text-sm px-4 py-3 rounded-sm focus:outline-none focus:border-orange-500 transition-all placeholder:text-neutral-800"
                         />
                     </div>
                 </div>
 
-                {/* BOTÕES DE AÇÃO */}
-                <div className="flex items-center justify-end gap-6 pt-4 border-t border-neutral-900">
-                    <Link 
-                        href="/academia" 
-                        className="text-neutral-500 text-[10px] font-bold uppercase tracking-widest hover:text-white transition-colors"
-                    >
+                <div className="flex items-center justify-end gap-6 pt-6 border-t border-neutral-900">
+                    <Link href="/academia" className="text-neutral-600 text-[10px] font-bold uppercase tracking-widest hover:text-white transition-colors">
                         Cancelar
                     </Link>
                     
                     <button 
                         type="submit"
-                        className="bg-white text-black px-8 py-3 text-[10px] font-black uppercase tracking-[0.2em] hover:bg-orange-500 hover:text-white transition-all duration-300 active:scale-95"
+                        disabled={isPending}
+                        className={`bg-white text-black px-10 py-4 text-[10px] font-black uppercase tracking-[0.2em] transition-all duration-300 active:scale-95 flex items-center gap-2
+                            ${isPending ? 'opacity-50 cursor-not-allowed' : 'hover:bg-orange-500 hover:text-white'}`}
                     >
-                        {academiaExistente ? 'Salvar Alterações' : 'Confirmar Registro'}
+                        {isPending ? 'Sincronizando...' : (academiaExistente ? 'Salvar Alterações' : 'Confirmar Registro')}
                     </button>
                 </div>
             </form>
 
-            {/* NOTA DE RODAPÉ */}
-            <p className="text-neutral-700 text-[9px] uppercase tracking-widest text-center">
-                Registro de unidade sujeito aos termos de licença de uso do software
+            <p className="text-neutral-800 text-[9px] uppercase tracking-widest text-center italic">
+                Cuidado: Os dados inseridos refletirão diretamente no acesso de novos usuários à unidade.
             </p>
         </div>
     )

@@ -22,7 +22,7 @@ return (
             <circle cx="6" cy="18" r="3" />
           </svg>
           <h1 className="text-white font-black text-2xl tracking-tighter italic">
-            POWER<span className="text-orange-600 font-light">GYM</span>
+            FIT<span className="text-orange-600 font-light">MANAGER</span>
           </h1>
         </div>
 

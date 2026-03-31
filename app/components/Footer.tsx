@@ -9,7 +9,7 @@ const currentYear = new Date().getFullYear();
         {/* Copyright Section */}
         <div className="order-2 md:order-1 text-center md:text-left">
           <p className="text-zinc-500 text-sm font-medium tracking-wide">
-            {currentYear} <span className="text-orange-500 font-black italic tracking-tighter">PAWERFIT</span>. 
+            {currentYear} <span className="text-orange-500 font-black italic tracking-tighter">FITMANAGER</span>. 
             Todos os direitos reservados.
           </p>
         </div>
