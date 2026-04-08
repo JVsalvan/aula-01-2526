@@ -31,7 +31,7 @@ export default function AcademiaForm({ academiaExistente }: AcademiaFormProps) {
         academiaExistente || new Academia(null, '', '', '', '', '', '', "ATIVO")
     );
 
-    // Tipagem atualizada para os novos campos
+    
     const handleChange = (campo: keyof Academia, valor: string) => {
         setAcademia(prev => ({
             ...prev,
@@ -39,9 +39,8 @@ export default function AcademiaForm({ academiaExistente }: AcademiaFormProps) {
         } as Academia));
     }
 
-    const handlerSalvar = async (e: React.FormEvent) => {
-        e.preventDefault(); // Usando submit tradicional para controlar o estado de loading
-        setIsPending(true);
+    const handlerSalvar = async (formData: FormData) => {
+   
 
         try {
             let dadosResult;
@@ -74,7 +73,7 @@ export default function AcademiaForm({ academiaExistente }: AcademiaFormProps) {
                 </h2>
             </header>
 
-            <form onSubmit={handlerSalvar} className="space-y-8 bg-neutral-900/20 p-8 border border-neutral-900 rounded-sm shadow-2xl shadow-black/50">
+            <form action={handlerSalvar} className="space-y-8 bg-neutral-900/20 p-8 border border-neutral-900 rounded-sm shadow-2xl shadow-black/50">
                 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-8">
                     {/* NOME DA UNIDADE */}

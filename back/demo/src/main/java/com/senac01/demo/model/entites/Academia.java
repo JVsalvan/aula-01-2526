@@ -23,8 +23,7 @@ public class Academia {
 
     @Column(nullable = false)
     private String email;
-
-
+    
     @Enumerated(EnumType.STRING)
     private EnumStatusAcademia status = EnumStatusAcademia.ATIVO;
 
