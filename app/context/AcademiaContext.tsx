@@ -1,17 +1,18 @@
 "use client";
 
 import { createContext, ReactNode, useContext, useState, useCallback } from "react";
-
 import axios from "axios";
 import { Academia } from "../(sistema)/academia/componets/AcademiaForm";
 
 interface AcademiaContextType {
     academiaSelecionada: Academia | null;
     listaAcademias: Academia[];
+    academiasEditadas: Academia[];
     loading: boolean;
     selecionarAcademia: (academia: Academia) => void;
     atualizarLista: () => Promise<void>;
     limparSelecao: () => void;
+    setAcademiasEditadas: (academia: Academia) => void;
 }
 
 const AcademiaContext = createContext<AcademiaContextType | undefined>(undefined);
@@ -19,9 +20,9 @@ const AcademiaContext = createContext<AcademiaContextType | undefined>(undefined
 export function AcademiaProvider({ children }: { children: ReactNode }) {
     const [academiaSelecionada, setAcademiaSelecionada] = useState<Academia | null>(null);
     const [listaAcademias, setListaAcademias] = useState<Academia[]>([]);
+    const [academiasEditadas, setAcademiasEditadasState] = useState<Academia[]>([]);
     const [loading, setLoading] = useState<boolean>(false);
 
-    // Função para buscar todas as academias (reutilizável)
     const atualizarLista = useCallback(async () => {
         setLoading(true);
         try {
@@ -32,6 +33,13 @@ export function AcademiaProvider({ children }: { children: ReactNode }) {
         } finally {
             setLoading(false);
         }
+    }, []);
+
+    const setAcademiasEditadas = useCallback((academia: Academia) => {
+        setAcademiasEditadasState((prev) => {
+            const filtradas = prev.filter((item) => item.id !== academia.id);
+            return [academia, ...filtradas];
+        });
     }, []);
 
     const selecionarAcademia = (academia: Academia) => {
@@ -47,10 +55,12 @@ export function AcademiaProvider({ children }: { children: ReactNode }) {
             value={{ 
                 academiaSelecionada, 
                 listaAcademias, 
+                academiasEditadas,
                 loading, 
                 selecionarAcademia, 
                 atualizarLista, 
-                limparSelecao 
+                limparSelecao,
+                setAcademiasEditadas
             }}
         >
             {children}

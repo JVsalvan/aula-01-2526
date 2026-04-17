@@ -1,10 +1,11 @@
 "use client"
 
-import { Usuario } from "@/app/context/AuthContext";
+
 import { UsuarioMock } from "@/app/mock/usuario";
 import { useEffect, useState } from "react";
 import Link from "next/link"; // Import correto do Next.js
 import axios from "axios";
+import { Usuario } from "@/app/types/usuarios";
 
 export default function Usuarios() {
   const [usuarios, setUsuarios] = useState<Usuario[]>([]);

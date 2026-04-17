@@ -4,24 +4,8 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import axios from "axios";
+import { Academia, AcademiaFormProps } from "@/app/types/academia";
 
-// Classe Academia atualizada com os novos campos
-export class Academia {
-    constructor(
-        public id: number | null,
-        public name: string,
-        public email: string,
-        public cnpj: string,
-        public telefone: string,
-        public localizacao: string,
-        public endereco: string,
-        public status: string
-    ) { }
-}
-
-interface AcademiaFormProps {
-    academiaExistente?: Academia
-}
 
 export default function AcademiaForm({ academiaExistente }: AcademiaFormProps) {
     const router = useRouter();

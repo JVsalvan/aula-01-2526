@@ -1,14 +1,14 @@
 'use client'
 
 import { useRouter } from "next/navigation";
-import { useAuth, Usuario } from "@/app/context/AuthContext"; // Ajuste o caminho
 import { useTransition } from "react";
 import { log } from "console";
 import axios from "axios";
+import { useAuth } from "../context/AuthContext";
+import { LoginResponse } from "../types/auth";
+import { Usuario } from "../types/usuarios";
 
-interface LoginResponse{
-    token:string
-}
+
 
 export default function LoginPage() {
     const router = useRouter();

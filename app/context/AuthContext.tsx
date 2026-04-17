@@ -1,27 +1,10 @@
 "use client"
 
 import { createContext, ReactNode, useContext, useState } from "react";
-
-export class Usuario {
-    constructor(
-        public id: number|null,
-        public name: string,
-        public email: string,
-        public status: string
-
-    ) { }
-}
+import { AuthcontextType, Usuario } from "../types/usuarios";
 
 
-interface AuthcontextType {
-    usuario: Usuario |null,
-    token:string| null,
-    login: (Usuario: Usuario, token: string) => void,
 
-    logout: () => void
-
-
-}
 
 const AuthContext = createContext<AuthcontextType | undefined>(undefined);
 
