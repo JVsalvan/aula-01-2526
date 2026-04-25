@@ -10,7 +10,7 @@ export class Usuario {
 }
 
 
-export interface AuthcontextType {
+export interface AuthContextType {
     usuario: Usuario |null,
     token:string| null,
     login: (Usuario: Usuario, token: string) => void,

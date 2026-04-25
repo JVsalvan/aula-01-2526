@@ -1,6 +1,7 @@
 import axios from "axios";
 import { config } from "process";
 import { useAuth } from "../context/AuthContext";
+import Cookies from "js-cookie"
 
 
 const api = axios.create({
@@ -9,12 +10,11 @@ const api = axios.create({
 });
 
 
+        const token = Cookies.get('token');
 api.interceptors.request.use(
+    (config)=>{ 
 
-    (config)=>{
-        const {token} =useAuth();
-
-
+        debugger;
         if(token){
             config.headers.Authorization= `Bearer ${token}`;
 

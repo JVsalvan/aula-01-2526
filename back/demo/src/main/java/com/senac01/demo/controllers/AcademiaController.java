@@ -24,27 +24,22 @@ public class AcademiaController {
     private AcademiaRepository academiaRepository;
 
     @Operation(summary = "Listar todas as academias", description = "Retorna a lista completa de unidades cadastradas no banco de dados.")
-    @ApiResponse(responseCode = "200", description = "Busca realizada com sucesso")
     @GetMapping
     public ResponseEntity<List<Academia>> listarTodas() {
         return ResponseEntity.ok(academiaRepository.findAll());
     }
 
     @Operation(summary = "Buscar por ID", description = "Localiza uma única academia através do seu identificador.")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Academia encontrada"),
-            @ApiResponse(responseCode = "404", description = "Academia não encontrada")
-    })
     @GetMapping("/{id}")
     public ResponseEntity<Academia> buscarPorId(
-            @Parameter(description = "ID da academia", example = "1") @PathVariable Long id) {
+
+            @PathVariable Long id) {
         return academiaRepository.findById(id)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }
 
     @Operation(summary = "Salvar nova academia", description = "Registra uma nova unidade. Se o status não for informado, será definido como ATIVO.")
-    @ApiResponse(responseCode = "200", description = "Academia registrada com sucesso")
     @PostMapping
     public ResponseEntity<Long> salvar(@RequestBody Academia academia) {
         if (academia.getStatus() == null) academia.setStatus(EnumStatusAcademia.ATIVO);
@@ -53,13 +48,9 @@ public class AcademiaController {
     }
 
     @Operation(summary = "Atualizar academia", description = "Edita os dados de uma academia existente (Nome, E-mail e Status).")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Dados atualizados com sucesso"),
-            @ApiResponse(responseCode = "404", description = "Academia não encontrada para edição")
-    })
     @PutMapping("/{id}")
     public ResponseEntity<?> editar(
-            @Parameter(description = "ID da academia a ser editada") @PathVariable Long id,
+           @PathVariable Long id,
             @RequestBody Academia academia) {
         return academiaRepository.findById(id).map(academiaBanco -> {
             academiaBanco.setName(academia.getName());
@@ -71,13 +62,9 @@ public class AcademiaController {
     }
 
     @Operation(summary = "Alterar status da unidade", description = "Endpoint específico para ativar ou desativar uma academia via DTO.")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Status alterado com sucesso"),
-            @ApiResponse(responseCode = "404", description = "Academia não encontrada")
-    })
     @PutMapping("/{id}/AlterarStatus")
     public ResponseEntity<?> alterarStatusAcademia(
-            @Parameter(description = "ID da academia") @PathVariable Long id,
+            @PathVariable Long id,
             @RequestBody AlterarStatusAcademia statusAcademia) {
         return academiaRepository.findById(id).map(academiaBanco -> {
             academiaBanco.setStatus(statusAcademia.statusAcademia());

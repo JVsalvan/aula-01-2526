@@ -2,7 +2,8 @@
 
 import { createContext, ReactNode, useContext, useState, useCallback } from "react";
 import axios from "axios";
-import { Academia } from "../(sistema)/academia/componets/AcademiaForm";
+import { Academia } from "../types/academia";
+
 
 interface AcademiaContextType {
     academiaSelecionada: Academia | null;

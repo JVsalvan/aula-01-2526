@@ -7,10 +7,13 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
+import java.util.Collections;
 
 @Component
 public class JwtFilter  extends OncePerRequestFilter  {
@@ -39,18 +42,24 @@ public class JwtFilter  extends OncePerRequestFilter  {
 
         }
 
-        String header = request.getHeader("Authorization");
-        if (header != null && header.startsWith("Bearer ")){
+            String header = request.getHeader("Authorization");
+            if (header != null && header.startsWith("Bearer ")){
 
             String token = header.replace("Bearer ","");
 
             //validar token Jwt
 
-            var retornotoken = tokenService.validarToken(token);
+            var retornotoken =tokenService.validarToken(token);
 
-            String username = retornotoken.getSubject();
+            var usuarioLogado  = retornotoken;
 
-            System.out.println("Usuario autentificado"+ username);
+            UsernamePasswordAuthenticationToken usuario = new UsernamePasswordAuthenticationToken(
+                    usuarioLogado,
+                    null,
+                    Collections.emptyList()
+                        );
+
+            SecurityContextHolder.getContext().setAuthentication(usuario);
 
         }else {
             response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);

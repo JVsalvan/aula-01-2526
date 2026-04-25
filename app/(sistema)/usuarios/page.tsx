@@ -1,11 +1,10 @@
 "use client"
 
-
-import { UsuarioMock } from "@/app/mock/usuario";
 import { useEffect, useState } from "react";
 import Link from "next/link"; // Import correto do Next.js
 import axios from "axios";
 import { Usuario } from "@/app/types/usuarios";
+import { buscarListaUsuarios } from "@/app/services/usuarioService";
 
 export default function Usuarios() {
   const [usuarios, setUsuarios] = useState<Usuario[]>([]);
@@ -16,15 +15,11 @@ export default function Usuarios() {
 
   const carregarDados = async () => {
     try {
-      const dados = await axios.get<Usuario[]>('http://localhost:8080/usuarios');
-      if (dados.status !== 200) {
-        alert("Erro ao carregar dados!")
-
-      }
-      setUsuarios(dados.data);
-
+      const dados = await buscarListaUsuarios();
+     
 
     } catch (error) {
+      alert("Erro ao carregar dados do usuarios")
       console.error(error);
     }
   };

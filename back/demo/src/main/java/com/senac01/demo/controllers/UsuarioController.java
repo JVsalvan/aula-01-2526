@@ -4,6 +4,7 @@ package com.senac01.demo.controllers;
 import com.senac01.demo.model.DTO.AlterarStatusRequest;
 import com.senac01.demo.model.entites.Usuario;
 import com.senac01.demo.model.repository.UsuarioRepository;
+import com.senac01.demo.services.UsuarioService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -13,6 +14,9 @@ import java.util.List;
 @RestController
 @RequestMapping("/usuarios")
 public class UsuarioController {
+
+    @Autowired
+    private UsuarioService usuarioService;
 
     @Autowired
     private UsuarioRepository usuarioRepository;
@@ -38,21 +42,7 @@ public class UsuarioController {
 
     @PutMapping("/{id}")
     public ResponseEntity<?> editar(@PathVariable Long id, @RequestBody Usuario usuario) {
-
-        var usuarioBanco = usuarioRepository.findById(id).orElse(null);
-
-        if (usuarioBanco != null) {
-
-            usuarioBanco.setEmail(usuario.getEmail());
-            usuarioBanco.setName(usuario.getName());
-            usuarioBanco.setSenha(usuario.getSenha());
-            usuarioBanco.setStatus(usuario.getStatus());
-
-            usuarioRepository.save(usuarioBanco);
-
-
-            return ResponseEntity.ok("Atualizado com sucesso!!");
-        }
+        var alterarUsuarioResult = usuarioService.AltetarUsuario(id,usuario);
 
         return ResponseEntity.notFound().build();
 
