@@ -3,7 +3,8 @@
 import { useEffect, useState, useMemo } from "react";
 import Link from "next/link";
 import axios from "axios";
-import { Academia } from "./componets/AcademiaForm";
+import { Academia } from "@/app/types/academia";
+import { buscarTodos } from "@/app/services/academiaService";
 
 export default function ListagemAcademias() {
   const [academias, setAcademias] = useState<Academia[]>([]);
@@ -16,9 +17,9 @@ export default function ListagemAcademias() {
 
   const carregarDados = async () => {
     try {
-      const response = await axios.get<Academia[]>('http://localhost:8080/academia');
-      if (response.status === 200) {
-        setAcademias(response.data);
+      const response = await buscarTodos();
+      if (response) {
+        setAcademias(response);
       }
     } catch (error) {
       console.error("Erro na requisição:", error);
