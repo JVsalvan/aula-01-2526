@@ -1,4 +1,4 @@
-package com.senac01.demo.config;
+package com.senac01.demo.infra.config;
 
 
 import io.swagger.v3.oas.models.Components;

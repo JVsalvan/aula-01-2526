@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import axios from "axios";
 import { Academia, AcademiaFormProps } from "@/app/types/academia";
+import { alterarAcademia, salvarAcademia } from "@/app/services/academiaService";
 
 
 export default function AcademiaForm({ academiaExistente }: AcademiaFormProps) {
@@ -29,11 +30,11 @@ export default function AcademiaForm({ academiaExistente }: AcademiaFormProps) {
         try {
             let dadosResult;
             if (academiaExistente && academiaExistente.id) {
-                dadosResult = await axios.put<number>(`http://localhost:8080/academia/${academiaExistente.id}`, academia);
-                alert("Unidade atualizada! ID: " + dadosResult.data);
+                dadosResult = await alterarAcademia(academia,academiaExistente.id);
+                alert("Unidade atualizada! ID: " + dadosResult);
             } else {
-                dadosResult = await axios.post<number>('http://localhost:8080/academia', academia);
-                alert("Unidade registrada! ID: " + dadosResult.data);
+                dadosResult = await salvarAcademia(academia);
+                alert("Unidade registrada! ID: " + dadosResult);
             }
 
             router.push("/academia");

@@ -1,13 +1,10 @@
-package com.senac01.demo.controllers;
+package com.senac01.demo.presentation;
 
-import com.senac01.demo.model.DTO.AlterarStatusAcademia;
-import com.senac01.demo.model.entites.Academia;
-import com.senac01.demo.model.enums.EnumStatusAcademia;
-import com.senac01.demo.model.repository.AcademiaRepository;
+import com.senac01.demo.application.DTO.AlterarStatusAcademia;
+import com.senac01.demo.domain.entites.Academia;
+import com.senac01.demo.domain.enums.EnumStatusAcademia;
+import com.senac01.demo.domain.repository.AcademiaRepository;
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.Parameter;
-import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;

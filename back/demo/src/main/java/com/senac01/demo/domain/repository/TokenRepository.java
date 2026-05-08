@@ -1,7 +1,7 @@
-package com.senac01.demo.model.repository;
+package com.senac01.demo.domain.repository;
 
 
-import com.senac01.demo.model.entites.Token;
+import com.senac01.demo.domain.entites.Token;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

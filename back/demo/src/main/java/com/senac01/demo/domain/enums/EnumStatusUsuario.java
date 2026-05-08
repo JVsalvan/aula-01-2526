@@ -1,4 +1,4 @@
-package com.senac01.demo.model.enums;
+package com.senac01.demo.domain.enums;
 
 public enum EnumStatusUsuario {
 

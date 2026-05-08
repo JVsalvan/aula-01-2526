@@ -1,7 +1,6 @@
-package com.senac01.demo.model.entites;
+package com.senac01.demo.domain.entites;
 
-import com.senac01.demo.model.enums.EnumStatusAcademia;
-import com.senac01.demo.model.enums.EnumStatusUsuario;
+import com.senac01.demo.domain.enums.EnumStatusAcademia;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
