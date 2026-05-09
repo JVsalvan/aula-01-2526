@@ -7,12 +7,14 @@ import axios from "axios";
 import { useAuth } from "../context/AuthContext";
 import { LoginResponse } from "../types/auth";
 import { Usuario } from "../types/usuarios";
+import { useDispatch } from "react-redux";
+import { login } from "../redux/slices/authSlice";
 
 
 
 export default function LoginPage() {
     const router = useRouter();
-    const { login } = useAuth();
+     const dispatch = useDispatch();
     const [isPending, startTransition] = useTransition();
 
     // No React 19, actions podem ser passadas diretamente para o 'action' do form
@@ -54,8 +56,8 @@ export default function LoginPage() {
                 const usuarioMock = new Usuario (1, "Professor joao","0000","true")
                 const tokenMock = "jwt-sample-token-123";
 
-                login(usuarioMock, loginResult.data.token);
-                
+                //login(usuarioMock, loginResult.data.token);
+                dispatch(login({usuario: {...usuarioMock}, token: loginResult.data.token}))
                 console.log(`Autenticado: ${email}`);
                 router.push("/home");
 

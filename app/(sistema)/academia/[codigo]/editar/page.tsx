@@ -4,7 +4,9 @@ import { useParams, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import axios from "axios";
-import AcademiaForm, { Academia } from "../../componets/AcademiaForm"; // Ajuste o caminho se necessário
+import { Academia } from "@/app/types/academia";
+import AcademiaForm from "../../componets/AcademiaForm";
+
 
 
 export default function EditarAcademia() {
