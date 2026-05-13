@@ -1,4 +1,4 @@
-import { Usuario } from "../context/AuthContext";
+import { Usuario } from "../types/usuarios";
 
 export class UsuarioMock {
 

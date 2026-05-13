@@ -1,22 +1,22 @@
-
 'use client'
 
-import { UsuarioMock } from "@/app/mock/usuario";
-import { useParams, useRouter } from "next/navigation"
-
+import { useParams, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-import Usuarioform from "../../componets/UsuarioForm";
+
 import Link from "next/link";
 import axios from "axios";
+
+import Usuarioform from "../../componets/UsuarioForm";
 import { Usuario } from "@/app/types/usuarios";
 
 export default function EditarUsuario() {
-    const params = useParams()
-    const router = useRouter()
+
+    const params = useParams();
+    const router = useRouter();
 
     const codigo = Number(params.codigo);
 
-    const [usuario,setUsuario] = useState<Usuario|null>(null);
+    const [usuario, setUsuario] = useState<Usuario | null>(null);
 
     useEffect(() => {
 
@@ -26,24 +26,58 @@ export default function EditarUsuario() {
 
     const buscarDados = async () => {
 
-       const user = await axios.get<Usuario>('http://localhost:8080/usuarios/'+codigo)
-       if (user.data) setUsuario(user.data)
-        else router.push("/usuarios")
+        try {
 
+            const response = await axios.get<Usuario>(
+                'http://localhost:8080/usuarios/' + codigo
+            );
 
+            if (response.data) {
+
+                setUsuario(response.data);
+
+            } else {
+
+                router.push("/usuarios");
+            }
+
+        } catch (error) {
+
+            console.error("Erro ao buscar usuário:", error);
+
+            alert("Erro ao carregar usuário.");
+
+            router.push("/usuarios");
+        }
     }
 
-    if(!usuario) return(
-        <div className="p-8">Carregando dados...</div>
-    )
+    if (!usuario) {
+
+        return (
+            <div className="p-8">
+                Carregando dados...
+            </div>
+        );
+    }
 
     return (
-       <div>
+
         <div>
-              <Link href="/usuarios">Voltar</Link>
-                <h1>Editar Usuario #{codigo}</h1>
+
+            <div>
+
+                <Link href="/usuarios">
+                    Voltar
+                </Link>
+
+                <h1>
+                    Editar Usuario #{codigo}
+                </h1>
+
+            </div>
+
+            <Usuarioform usuariosExistente={usuario} />
+
         </div>
-        <Usuarioform usuariosExistente={usuario}/>
-       </div>
     );
 }
