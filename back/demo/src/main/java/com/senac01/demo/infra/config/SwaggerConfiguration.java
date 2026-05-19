@@ -14,18 +14,22 @@ public class SwaggerConfiguration {
 
 
     @Bean
-    public OpenAPI cunstomOpenApi(){
+    public OpenAPI customOpenApi(){
         return new OpenAPI()
-                .addSecurityItem(new SecurityRequirement().addList("bearerAuth"))
-                .components(new Components().addSecuritySchemes("bearerAuth",new SecurityScheme()
-                        .type(SecurityScheme.Type.HTTP)
-                        .scheme("bearer")
-                        .bearerFormat("JWT")
+                .addSecurityItem( new SecurityRequirement().addList("bearerAuth"))
+                .components(new Components().addSecuritySchemes("bearerAuth",
+                        new SecurityScheme()
+                                .type(SecurityScheme.Type.HTTP)
+                                .scheme("bearer")
+                                .bearerFormat("JWT")
                 ))
-                .info(new Info()
-                .title("AULA API")
-                .version("1.0")
-                .description("API por controle de academia")
-                .termsOfService("Linkedin"));
+                .info( new Info()
+                        .title("API Aula Full Stack")
+                        .version("1.0")
+                        .description("Api responsavel por passar o conhecimento aos academicos!")
+                        .termsOfService("https://www.mtxsistemas.com")
+                );
     }
+
+
 }

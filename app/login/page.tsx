@@ -15,15 +15,12 @@ import { login } from "../redux/slices/authSlice";
 export default function LoginPage() {
     const router = useRouter();
      const dispatch = useDispatch();
-    const [isPending, startTransition] = useTransition();
 
     // No React 19, actions podem ser passadas diretamente para o 'action' do form
     const handleLoginAction = async (formData: FormData) => {
         const email = formData.get("email") as string;
         const senha = formData.get("senha") as string; // Corrigido para bater com o name="senha"
 
-        // Usamos startTransition para que o React saiba que isso é uma mudança de estado de UI
-        startTransition(async () => {
             try {
                 debugger;
 
@@ -65,7 +62,6 @@ export default function LoginPage() {
                 alert("Erro ao entrar no sistema");
                 console.error(error);
             }
-        });
     };
 
     return (
@@ -118,10 +114,9 @@ export default function LoginPage() {
 
                         <button
                             type="submit"
-                            disabled={isPending}
                             className="w-full bg-white text-black py-3 rounded-sm font-bold text-xs uppercase tracking-[0.2em] hover:bg-orange-500 hover:text-white transition-all duration-300 mt-4 disabled:opacity-50 disabled:cursor-not-allowed"
                         >
-                            {isPending ? "Autenticando..." : "Acessar Sistema"}
+                            {"Acessar Sistema"}
                         </button>
                     </form>
                 </div>

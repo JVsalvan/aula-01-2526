@@ -1,6 +1,5 @@
 'use client'
 
-import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 
 import "./globals.css";
@@ -23,10 +22,6 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
-export const metadata: Metadata = {
-  title: "Fit",
-  description: "site para academias",
-};
 
 function Layout({
   children,
@@ -70,11 +65,9 @@ export default function RootLayout({
 
             <AcademiaProvider>
 
-              <Layout>
 
                 {children}
 
-              </Layout>
 
             </AcademiaProvider>
 

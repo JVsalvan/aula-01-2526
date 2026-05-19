@@ -1,6 +1,8 @@
 package com.senac01.demo.domain.entites;
 
 
+import com.senac01.demo.application.DTO.UsuarioAdmRequest;
+import com.senac01.demo.application.DTO.UsuarioRequest;
 import com.senac01.demo.domain.enums.EnumStatusUsuario;
 import jakarta.annotation.Nullable;
 import jakarta.persistence.*;
@@ -25,7 +27,7 @@ public class Usuario implements UserDetails {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String name;
+    private String nome;
 
     private String email;
 
@@ -34,6 +36,21 @@ public class Usuario implements UserDetails {
     private String role;
 
     private EnumStatusUsuario status = EnumStatusUsuario.ATIVO;
+
+    public Usuario(UsuarioRequest usuario) {
+        this.email =usuario.email();
+        this.nome = usuario.nome();
+        this.senha = usuario.senha();
+        this.role = "ROLE_USER";
+    }
+
+    public Usuario(UsuarioAdmRequest usuario) {
+        this.email =usuario.email();
+        this.nome = usuario.nome();
+        this.senha = usuario.senha();
+        this.role = "ROLE_ADMIN";
+    }
+
 
 
     @Override

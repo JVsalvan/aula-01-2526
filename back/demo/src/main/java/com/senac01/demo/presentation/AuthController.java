@@ -12,23 +12,16 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
 @RestController
 @RequestMapping("/auth")
-@Tag(description = "controle de autentificação", name ="Serviço de autentificação")
+@Tag(description = "Serviço responsavel por controlar a autenticação de usuarios e sessão!",name = "Serviço autenticação")
 public class AuthController {
 
     @Autowired
-    private UsuarioRepository usuarioRepository;
+    private TokenService tokenService;
 
     @Autowired
-    private TokenService tokenService;
     private UsuarioService usuarioService;
-
-    public AuthController(UsuarioService usuarioService) {
-        this.usuarioService = usuarioService;
-    }
-
 
     @PostMapping("/login")
     @Operation(description = "Valida senha asdhaukshd 50 carecteres, calcula longitudo com latitud!",summary = "Login")
@@ -44,5 +37,6 @@ public class AuthController {
 
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
     }
+
 
 }

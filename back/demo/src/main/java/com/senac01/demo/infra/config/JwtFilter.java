@@ -33,6 +33,7 @@ public class JwtFilter extends OncePerRequestFilter {
         if(path.equals("/auth/login")
                 || path.startsWith("/swagger-ui")
                 || path.startsWith("/webjars")
+                || path.startsWith("/usuarios/adm")
                 || path.startsWith("/swagger-resources")
                 || path.startsWith("/v3/api-docs")
                 || request.getMethod().startsWith("OPTIONS") )
@@ -52,11 +53,10 @@ public class JwtFilter extends OncePerRequestFilter {
             var usuarioLogado  = retornotoken;
 
             UsernamePasswordAuthenticationToken usuario = new UsernamePasswordAuthenticationToken(
-
+                    usuarioLogado.getAlgorithm(),
                     usuarioLogado,
-                    null,
-                    Collections.emptyList()
-            );
+                    null
+                        );
 
             SecurityContextHolder.getContext().setAuthentication(usuario);
 
