@@ -77,7 +77,7 @@ export default function Academias() {
                 </div>
 
                 <Link
-                    href="/academia/nova"
+                    href="/academia/novo"
                     className="bg-orange-500 hover:bg-orange-600 text-white px-5 py-3 text-sm font-bold uppercase tracking-wider transition-all"
                 >
                     + Nova Unidade

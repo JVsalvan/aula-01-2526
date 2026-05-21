@@ -18,7 +18,7 @@ public record UsuarioResponse (
     public UsuarioResponse(Usuario usuario){
             this(
                     usuario.getId(),
-                    usuario.getName(),
+                    usuario.getNome(),
                     usuario.getEmail(),
                     usuario.getSenha(),
                     usuario.getStatus().toString()
