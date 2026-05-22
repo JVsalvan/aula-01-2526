@@ -4,11 +4,11 @@ import { useRouter } from "next/navigation";
 import { useTransition } from "react";
 import { log } from "console";
 import axios from "axios";
-import { useAuth } from "../context/AuthContext";
 import { LoginResponse } from "../types/auth";
 import { Usuario } from "../types/usuarios";
 import { useDispatch } from "react-redux";
-import { login } from "../redux/slices/authSlice";
+import { setToken, setUsuario } from "../redux/slices/authSlice";
+import { setTimeout } from "timers";
 
 
 
@@ -53,8 +53,9 @@ export default function LoginPage() {
                 const usuarioMock = new Usuario (1, "Professor joao","0000","true")
                 const tokenMock = "jwt-sample-token-123";
 
+               dispatch(setToken({token: loginResult.data.token}))
                 //login(usuarioMock, loginResult.data.token);
-                dispatch(login({usuario: {...usuarioMock}, token: loginResult.data.token}))
+                dispatch(setUsuario({usuario: {...usuarioMock}}))
                 console.log(`Autenticado: ${email}`);
                 router.push("/home");
 

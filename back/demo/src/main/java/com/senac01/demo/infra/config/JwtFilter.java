@@ -53,9 +53,9 @@ public class JwtFilter extends OncePerRequestFilter {
             var usuarioLogado  = retornotoken;
 
             UsernamePasswordAuthenticationToken usuario = new UsernamePasswordAuthenticationToken(
-                    usuarioLogado.getAlgorithm(),
                     usuarioLogado,
-                    null
+                    null,
+                    usuarioLogado.getAuthorities()
                         );
 
             SecurityContextHolder.getContext().setAuthentication(usuario);

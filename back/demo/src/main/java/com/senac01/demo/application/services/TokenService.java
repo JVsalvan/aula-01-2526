@@ -5,6 +5,7 @@ import com.auth0.jwt.JWTVerifier;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import com.senac01.demo.domain.entites.Token;
+import com.senac01.demo.domain.entites.Usuario;
 import com.senac01.demo.domain.repository.TokenRepository;
 import com.senac01.demo.domain.repository.UsuarioRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,16 +33,24 @@ public class TokenService {
     @Autowired
     private UsuarioRepository usuarioRepository;
 
-    public DecodedJWT validarToken(String token) {
 
-        Algorithm algorithm = Algorithm.HMAC256(secret);
+    public Usuario validarToken(String token) {
 
-        JWTVerifier verifier = JWT.require(algorithm)
-                .withIssuer(emissor)
-                .build();
+        try {
 
-        return verifier.verify(token);
+            Algorithm algoritomo = Algorithm.HMAC256(secret);
+            JWTVerifier verifier = JWT.require(algoritomo)
+                    .withIssuer(emissor)
+                    .build();
+            verifier.verify(token);
 
+            var tokenBanco = tokenRepository.findTokenByToken(token);
+
+            return tokenBanco.get().getUsuario();
+
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 
     public  String gerarToken(String email) {

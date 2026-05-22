@@ -3,10 +3,10 @@
 import { useParams, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import axios from "axios";
 
 import { Academia } from "@/app/types/academia";
 import AcademiaForm from "../../componets/AcademiaForm";
+import { buscarAcademiaPorId } from "@/app/services/academiaService";
 
 export default function EditarAcademia() {
 
@@ -29,26 +29,23 @@ export default function EditarAcademia() {
 
     }, [id]);
 
-    async function buscarDados() {
+   async function buscarDados() {
 
-        try {
+    try {
 
-            const response = await axios.get<Academia>(
-                `http://localhost:8080/academia/${id}`
-            );
+        const response = await buscarAcademiaPorId(id);
 
-            setAcademia(response.data);
+        setAcademia(response);
 
-        } catch (error) {
+    } catch (error) {
 
-            console.error("Erro ao buscar academia:", error);
+        console.error("Erro ao buscar academia:", error);
 
-            alert("Erro ao carregar academia");
+        alert("Erro ao carregar academia");
 
-            router.push("/academias");
-        }
+        router.push("/academias");
     }
-
+}
     // Loading
     if (!academia) {
         return (

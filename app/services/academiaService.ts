@@ -12,6 +12,7 @@ export async function buscarTodos(): Promise<Academia[]> {
     return [];
 }
 
+
 export async function alterarAcademia(
     academia: Academia,
     id: number
@@ -23,6 +24,22 @@ export async function alterarAcademia(
     );
 
     return dadosResult.data;
+}
+
+export async function buscarAcademiaPorId(
+    id: number
+): Promise<Academia | null> {
+
+    const dados = await api.get<Academia>(
+        `/academia/${id}`
+    );
+
+    if (dados.status === 200) {
+
+        return dados.data;
+    }
+
+    return null;
 }
 
 export async function salvarAcademia(
@@ -65,4 +82,6 @@ export async function alterarStatusAcademia(
 
         alert("Erro ao atualizar Status!");
     }
+
+    
 }

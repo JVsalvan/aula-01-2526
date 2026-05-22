@@ -1,11 +1,15 @@
 import { Usuario } from "./usuarios"
 
 export interface LoginResponse{
-    token:string
+    token: string
+}
+
+export interface LoginRequest{
+    email: string,
+    senha: string
 }
 
 export interface AuthState {
-    usuario : Usuario| null;
-    token : string;
-
+    usuario: Usuario | null; 
+    token: string;
 }

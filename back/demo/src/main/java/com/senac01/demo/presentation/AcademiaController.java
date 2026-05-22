@@ -1,9 +1,9 @@
 package com.senac01.demo.presentation;
 
+import com.senac01.demo.application.DTO.AcademiaRequest;
+import com.senac01.demo.application.DTO.AcademiaResponse;
 import com.senac01.demo.application.DTO.AlterarStatusAcademia;
-import com.senac01.demo.domain.entites.Academia;
-import com.senac01.demo.domain.enums.EnumStatusAcademia;
-import com.senac01.demo.domain.repository.AcademiaRepository;
+import com.senac01.demo.application.services.AcademiaService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,59 +14,55 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/academia")
-@Tag(name = "Academia", description = "Gerenciamento das unidades do sistema FitManager")
+@Tag(name = "Academia controller",description = "Controladora responsavel por gerenciar as academias!")
 public class AcademiaController {
 
     @Autowired
-    private AcademiaRepository academiaRepository;
+    private AcademiaService academiaService;
 
-    @Operation(summary = "Listar todas as academias", description = "Retorna a lista completa de unidades cadastradas no banco de dados.")
+
     @GetMapping
-    public ResponseEntity<List<Academia>> listarTodas() {
-        return ResponseEntity.ok(academiaRepository.findAll());
+    @Operation(summary = "Listar todas",description = "Método para listar todas as academias!")
+    public ResponseEntity<List<AcademiaResponse>> listarTodas(){
+
+        var academias = academiaService.ListarTodas();
+
+        return ResponseEntity.ok(academias);
     }
 
-    @Operation(summary = "Buscar por ID", description = "Localiza uma única academia através do seu identificador.")
     @GetMapping("/{id}")
-    public ResponseEntity<Academia> buscarPorId(
+    @Operation(summary = "Consulta de academia por ID", description = "Método responsavel por consultar uma unica academia por ID e se não existir retorna null!")
+    public ResponseEntity<AcademiaResponse> buscarPorId(@PathVariable Long id){
 
-            @PathVariable Long id) {
-        return academiaRepository.findById(id)
-                .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
+        return ResponseEntity.ok(academiaService.BuscarAcademiaPorId(id));
     }
 
-    @Operation(summary = "Salvar nova academia", description = "Registra uma nova unidade. Se o status não for informado, será definido como ATIVO.")
     @PostMapping
-    public ResponseEntity<Long> salvar(@RequestBody Academia academia) {
-        if (academia.getStatus() == null) academia.setStatus(EnumStatusAcademia.ATIVO);
-        Academia academiaSalva = academiaRepository.save(academia);
-        return ResponseEntity.ok(academiaSalva.getId());
+    @Operation(summary = "Criar academia",description = "Metodo responsavel por criar academia")
+    public ResponseEntity<Long> salvar (@RequestBody AcademiaRequest academia){
+
+        return ResponseEntity.ok(academiaService.SalvarAcademia(academia));
     }
 
-    @Operation(summary = "Atualizar academia", description = "Edita os dados de uma academia existente (Nome, E-mail e Status).")
     @PutMapping("/{id}")
-    public ResponseEntity<?> editar(
-           @PathVariable Long id,
-            @RequestBody Academia academia) {
-        return academiaRepository.findById(id).map(academiaBanco -> {
-            academiaBanco.setName(academia.getName());
-            academiaBanco.setEmail(academia.getEmail());
-            academiaBanco.setStatus(academia.getStatus());
-            academiaRepository.save(academiaBanco);
-            return ResponseEntity.ok("Unidade atualizada com sucesso!!");
-        }).orElse(ResponseEntity.notFound().build());
+    @Operation(summary = "Atualizar academia",description = "Metodo responsavel por atualizar academia")
+    public ResponseEntity<?> alterarAcademia (@PathVariable Long id, @RequestBody AcademiaRequest academia){
+
+        var alterarAcademiaResult = academiaService.AlterarAcademia(id,academia);
+
+        return alterarAcademiaResult
+                ? ResponseEntity.ok("Atualizado com sucesso!")
+                : ResponseEntity.notFound().build();
     }
 
-    @Operation(summary = "Alterar status da unidade", description = "Endpoint específico para ativar ou desativar uma academia via DTO.")
     @PutMapping("/{id}/AlterarStatus")
-    public ResponseEntity<?> alterarStatusAcademia(
-            @PathVariable Long id,
-            @RequestBody AlterarStatusAcademia statusAcademia) {
-        return academiaRepository.findById(id).map(academiaBanco -> {
-            academiaBanco.setStatus(statusAcademia.statusAcademia());
-            academiaRepository.save(academiaBanco);
-            return ResponseEntity.ok(academiaBanco.getId());
-        }).orElse(ResponseEntity.notFound().build());
+    public ResponseEntity<?> AlterarStatus(@PathVariable Long id,
+                                           @RequestBody AlterarStatusAcademia statusAcademia){
+
+        boolean alterarStatusResult = academiaService.AlterarStatus(id,statusAcademia);
+
+        return alterarStatusResult
+                ? ResponseEntity.ok("Atualizado com sucesso!")
+                : ResponseEntity.notFound().build();
     }
 }

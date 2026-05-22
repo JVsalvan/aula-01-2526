@@ -2,10 +2,10 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import axios from "axios";
+
 
 import { Usuario } from "@/app/types/usuarios";
-import { buscarListaUsuarios } from "@/app/services/usuarioService";
+import { alterarStatusUsuario, buscarListaUsuarios } from "@/app/services/usuarioService";
 
 export default function Usuarios() {
 
@@ -34,48 +34,29 @@ export default function Usuarios() {
     };
 
     const handlerAlterarStatus = async (
-        usuario: Usuario
-    ) => {
+    usuario: Usuario
+) => {
 
-        try {
+    try {
 
-            let novoStatus = {};
+        const codigo = await alterarStatusUsuario(
+            usuario
+        );
 
-            if (usuario.status === "ATIVO") {
+        carregarDados();
 
-                novoStatus = {
-                    status: "INATIVO"
-                };
+        alert(
+            "Usuario salvo com sucesso! Codigo:" +
+            codigo
+        );
 
-            } else {
+    } catch (error) {
 
-                novoStatus = {
-                    status: "ATIVO"
-                };
-            }
-
-            const dadosResult = await axios.put<number>(
-                'http://localhost:8080/usuarios/' +
-                usuario.id +
-                '/AlterarStatus',
-
-                { status: novoStatus }
-            );
-
-            carregarDados();
-
-            alert(
-                "Usuario salvo com sucesso! Codigo:" +
-                dadosResult.data
-            );
-
-        } catch (error) {
-
-            alert(
-                "Erro ao alterar o status do usuario"
-            );
-        }
-    };
+        alert(
+            "Erro ao alterar o status do usuario"
+        );
+    }
+};
 
     return (
 

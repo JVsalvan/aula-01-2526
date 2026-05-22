@@ -3,9 +3,12 @@
 import Link from "next/link";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import axios from "axios";
 
 import { Usuario, UsuarioFormProps } from "@/app/types/usuarios";
+import {
+    alterarUsuario,
+    salvarUsuario
+} from "@/app/services/usuarioService";
 
 export default function Usuarioform({
     usuariosExistente
@@ -26,6 +29,7 @@ export default function Usuarioform({
         setUsuario(prev =>
             new Usuario(
                 prev.id,
+
                 campo === 'name'
                     ? valor
                     : prev.name,
@@ -36,36 +40,34 @@ export default function Usuarioform({
 
                 prev.status
             )
-        )
+        );
     }
 
     const handlerSalvar = async (
         formData: FormData
     ) => {
+debugger
+        if (usuariosExistente && usuariosExistente.id) {
 
-        if (usuariosExistente) {
-
-            const dadosResult = await axios.put<number>(
-                'http://localhost:8080/usuarios/' +
-                usuariosExistente.id,
-                usuario
+            const codigo = await alterarUsuario(
+                usuario,
+                usuariosExistente.id
             );
 
             alert(
                 "Usuario salvo com sucesso! Codigo:" +
-                dadosResult.data
+                codigo
             );
 
         } else {
 
-            const dadosResult = await axios.post<number>(
-                'http://localhost:8080/usuarios',
+            const codigo = await salvarUsuario(
                 usuario
             );
 
             alert(
                 "Usuario salvo com sucesso! Codigo:" +
-                dadosResult.data
+                codigo
             );
         }
 
@@ -73,6 +75,7 @@ export default function Usuarioform({
     }
 
     return (
+
         <div className="max-w-2xl mx-auto space-y-8 animate-in fade-in duration-500">
 
             {/* CABEÇALHO */}
@@ -140,6 +143,7 @@ export default function Usuarioform({
                             className="bg-neutral-950 border border-neutral-800 text-white text-sm px-4 py-3 rounded-sm focus:outline-none focus:border-orange-500 focus:ring-1 focus:ring-orange-500/20 transition-all placeholder:text-neutral-700"
                         />
                     </div>
+
                 </div>
 
                 {/* BOTÕES */}
@@ -160,11 +164,13 @@ export default function Usuarioform({
                     </button>
 
                 </div>
+
             </form>
 
             <p className="text-neutral-700 text-[9px] uppercase tracking-widest text-center">
                 Campos obrigatórios protegidos por protocolo de segurança
             </p>
+
         </div>
-    )
+    );
 }

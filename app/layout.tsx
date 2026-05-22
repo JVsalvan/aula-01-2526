@@ -1,16 +1,14 @@
 'use client'
 
 import { Geist, Geist_Mono } from "next/font/google";
-
 import "./globals.css";
 
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
-
-import { AuthProvider, useAuth } from "./context/AuthContext";
-import { AcademiaProvider } from "./context/AcademiaContext";
+import { useSelector } from "react-redux";
 
 import StoreProvider from "./redux/StoreProvider";
+import { RootState } from "./redux/store";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -22,14 +20,15 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
-
 function Layout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
 
-  const { usuario } = useAuth();
+  const usuario = useSelector(
+    (state: RootState) => state.auth.usuario
+  );
 
   const router = useRouter();
 
@@ -61,17 +60,11 @@ export default function RootLayout({
 
         <StoreProvider>
 
-          <AuthProvider>
+          <Layout>
 
-            <AcademiaProvider>
+            {children}
 
-
-                {children}
-
-
-            </AcademiaProvider>
-
-          </AuthProvider>
+          </Layout>
 
         </StoreProvider>
 
