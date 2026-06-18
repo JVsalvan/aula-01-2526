@@ -2,9 +2,9 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
- 
+
 export default function Sidebar() {
-const pathname = usePathname();
+  const pathname = usePathname();
   const YEAR = new Date().getFullYear();
 
   const menuItems = [
@@ -17,17 +17,18 @@ const pathname = usePathname();
       ]
     },
     {
-      group: "Performance",
+      group: "Gestão da Academia",
       items: [
-        { label: 'Fichas de Treino', href: '/treinos' },
-        { label: 'Avaliação Física', href: '/avaliacoes' },
+        { label: 'Alunos', href: '/alunos' },
+        { label: 'Planos', href: '/planos' },
+        { label: 'Matrículas', href: '/matriculas' },
       ]
     }
   ];
 
   return (
     <aside className="w-64 min-h-screen bg-neutral-950 border-r border-neutral-900 flex flex-col shrink-0 font-sans">
-      
+
       {/* --- LOGO: FOCO EM FORÇA E PERFORMANCE --- */}
       <div className="p-8">
         <div className="flex flex-col gap-1 mb-12">
@@ -51,22 +52,19 @@ const pathname = usePathname();
                   const isActive = pathname === item.href;
                   return (
                     <li key={item.label}>
-                      <Link 
-                        href={item.href} 
-                        className={`group flex items-center justify-between transition-all duration-300 ${
-                          isActive ? 'text-white' : 'text-neutral-500 hover:text-neutral-200'
-                        }`}
+                      <Link
+                        href={item.href}
+                        className={`group flex items-center justify-between transition-all duration-300 ${isActive ? 'text-white' : 'text-neutral-500 hover:text-neutral-200'
+                          }`}
                       >
-                        <span className={`text-xs font-bold uppercase tracking-widest ${
-                          isActive ? 'italic' : 'group-hover:italic'
-                        }`}>
+                        <span className={`text-xs font-bold uppercase tracking-widest ${isActive ? 'italic' : 'group-hover:italic'
+                          }`}>
                           {item.label}
                         </span>
-                        
+
                         {/* Indicador de Seleção: Linha que cresce no hover ou fica fixa se ativo */}
-                        <div className={`h-[1px] bg-orange-500 transition-all duration-300 ${
-                          isActive ? 'w-6' : 'w-0 group-hover:w-4'
-                        }`} />
+                        <div className={`h-[1px] bg-orange-500 transition-all duration-300 ${isActive ? 'w-6' : 'w-0 group-hover:w-4'
+                          }`} />
                       </Link>
                     </li>
                   );
@@ -94,9 +92,9 @@ const pathname = usePathname();
               </p>
             </div>
           </div>
-          
-          <p 
-            suppressHydrationWarning 
+
+          <p
+            suppressHydrationWarning
             className="mt-6 text-[9px] font-medium text-neutral-800 uppercase tracking-[0.3em]"
           >
             © {YEAR} SYSTEM
