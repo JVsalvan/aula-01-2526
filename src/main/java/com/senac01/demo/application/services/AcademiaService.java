@@ -34,7 +34,7 @@ public class AcademiaService {
         }
     }
 
-    public AcademiaResponse BuscarAcademiaPorId(Long id) {
+    //public AcademiaResponse BuscarAcademiaPorId(Long id) {
 
         try{
 
