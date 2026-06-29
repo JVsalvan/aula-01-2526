@@ -5,7 +5,7 @@ interface DashboardState {
     data: DashboardData | null;
     loading: boolean;
     error: string | null;
-    lastFetched: number | null; // Para controle de cache simples
+    lastFetched: number | null; 
 }
 
 const initialState: DashboardState = {

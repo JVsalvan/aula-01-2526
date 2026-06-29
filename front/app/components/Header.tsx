@@ -2,6 +2,7 @@ import { useRouter } from "next/navigation";
 import { UsuarioLogado } from "../types/usuarios";
 import { useDispatch } from "react-redux";
 import { logout } from "../redux/slices/authSlice";
+import { invalidateDashboard } from "../redux/slices/dashboardSlice";
 
 interface HeaderProps {
   usuarioLogado: UsuarioLogado;
@@ -70,6 +71,7 @@ export default function Header({ usuarioLogado }: HeaderProps) {
             className="flex items-center gap-2 bg-orange-600 hover:bg-orange-700 text-black font-bold py-2 px-4 rounded-md transition-all active:scale-95 group"
             onClick={() => {
               dispatch(logout())
+              dispatch(invalidateDashboard())
               router.push("/login")
             }}
           >
