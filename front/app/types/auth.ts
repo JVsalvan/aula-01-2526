@@ -1,6 +1,11 @@
-import { Usuario } from "./usuarios"
+import { Usuario, UsuarioLogado } from "./usuarios"
 
 export interface LoginResponse{
+    token: string
+    usuario: UsuarioLogado
+}
+
+export interface TokenResponse {
     token: string
 }
 
@@ -10,6 +15,6 @@ export interface LoginRequest{
 }
 
 export interface AuthState {
-    usuario: Usuario | null; 
+    usuario: UsuarioLogado | null; 
     token: string;
 }

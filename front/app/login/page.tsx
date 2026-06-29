@@ -1,68 +1,31 @@
 'use client'
 
 import { useRouter } from "next/navigation";
-import { useTransition } from "react";
-import { log } from "console";
-import axios from "axios";
-import { LoginResponse } from "../types/auth";
-import { Usuario } from "../types/usuarios";
 import { useDispatch } from "react-redux";
 import { setToken, setUsuario } from "../redux/slices/authSlice";
-import { setTimeout } from "timers";
+import { loginService } from "../services/authService";
+import { buscarUsuarioLogado } from "../services/usuarioService";
 
 
 
 export default function LoginPage() {
     const router = useRouter();
-     const dispatch = useDispatch();
+    const dispatch = useDispatch();
 
     // No React 19, actions podem ser passadas diretamente para o 'action' do form
     const handleLoginAction = async (formData: FormData) => {
         const email = formData.get("email") as string;
-        const senha = formData.get("senha") as string; // Corrigido para bater com o name="senha"
+        const senha = formData.get("senha") as string;
 
-            try {
-                debugger;
+        try {
+            const loginResponse = await loginService({ email, senha });
+            dispatch(setToken({ token: loginResponse.token }))
+            dispatch(setUsuario({ usuario: loginResponse.usuario }))
+            router.push("/dashboard");
+        } catch (error) {
+            alert(error);
+        }
 
-
-            // var loginResult = await fetch("http://localhost:8080/auth/login",{
-            //         method : "POST", 
-            //         headers:{
-            //            'content-Type':'application/json'
-            //         },
-            //         body: JSON.stringify({email:email,senha:senha})
-            //     });
-            //     if(!loginResult)
-            //         alert("Usuario ou senha invalido!")
-            //     return;
-
-            var loginResult = await axios.post<LoginResponse>('http://localhost:8080/auth/login',{email:email,senha:senha});
-            if(loginResult.status !== 200){
-                alert("Usuario ou senha invalido")
-                return;
-            
-            }
-
-        
-
-                // Simulação de delay de rede
-                await new Promise(resolve => setTimeout(resolve, 1000));
-
-                // Corrigido para bater com o seu construtor da classe Usuario
-                // Supondo: new Usuario(codigo, name, cpf?, ativo?)
-                const usuarioMock = new Usuario (1, "Professor joao","0000","true")
-                const tokenMock = "jwt-sample-token-123";
-
-               dispatch(setToken({token: loginResult.data.token}))
-                //login(usuarioMock, loginResult.data.token);
-                dispatch(setUsuario({usuario: {...usuarioMock}}))
-                console.log(`Autenticado: ${email}`);
-                router.push("/home");
-
-            } catch (error) {
-                alert("Erro ao entrar no sistema");
-                console.error(error);
-            }
     };
 
     return (

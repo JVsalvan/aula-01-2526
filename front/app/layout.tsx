@@ -1,14 +1,10 @@
 'use client'
 
-import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 
-import { useEffect } from "react";
-import { useRouter } from "next/navigation";
-import { useSelector } from "react-redux";
-
+import { Geist, Geist_Mono } from "next/font/google";
 import StoreProvider from "./redux/StoreProvider";
-import { RootState } from "./redux/store";
+
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -20,31 +16,6 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
-function Layout({
-  children,
-}: Readonly<{
-  children: React.ReactNode;
-}>) {
-
-  const usuario = useSelector(
-    (state: RootState) => state.auth.usuario
-  );
-
-  const router = useRouter();
-
-  useEffect(() => {
-
-    if (usuario == null) {
-
-      router.push("/login");
-    }
-
-  });
-
-  if (usuario == null) return null;
-
-  return children;
-}
 
 export default function RootLayout({
   children,
@@ -59,13 +30,7 @@ export default function RootLayout({
       <body className={`${geistSans.variable} ${geistMono.variable} h-full bg-neutral-950 text-neutral-100 antialiased`}>
 
         <StoreProvider>
-
-          <Layout>
-
             {children}
-
-          </Layout>
-
         </StoreProvider>
 
       </body>

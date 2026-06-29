@@ -9,6 +9,15 @@ export class Usuario {
     ) { }
 }
 
+export interface UsuarioRequest {
+    id: number,
+    nome: string,
+    email: string,
+    senha: string,
+    cref: string,
+    
+}
+
 
 export interface AuthContextType {
     usuario: Usuario |null,
@@ -21,5 +30,10 @@ export interface AuthContextType {
 }
 
  export interface UsuarioFormProps{
-    usuariosExistente?: Usuario
+    usuariosExistente?: UsuarioRequest
+}
+
+export interface UsuarioLogado {
+    nome: string,
+    role: string
 }

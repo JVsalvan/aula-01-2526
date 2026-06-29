@@ -1,9 +1,6 @@
 package com.senac01.demo.application.services;
 
-import com.senac01.demo.application.DTO.LoginRequest;
-import com.senac01.demo.application.DTO.UsuarioAdmRequest;
-import com.senac01.demo.application.DTO.UsuarioRequest;
-import com.senac01.demo.application.DTO.UsuarioResponse;
+import com.senac01.demo.application.DTO.*;
 import com.senac01.demo.domain.entites.Usuario;
 import com.senac01.demo.domain.repository.UsuarioRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -78,10 +75,10 @@ public class UsuarioService {
         }
     }
 
-    public Usuario BuscarUsuarioLogado(Usuario usuario) {
+    public UsuarioLogadoResponse BuscarUsuarioLogado(Usuario usuario) {
 
         try {
-            return usuarioRepository.findById(usuario.getId()).orElse(null);
+            return new UsuarioLogadoResponse(usuarioRepository.findById(usuario.getId()).orElse(null)) ;
 
         } catch (Exception e) {
             throw new RuntimeException(e);
@@ -111,5 +108,19 @@ public class UsuarioService {
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
+    }
+
+    public boolean AlterarStatusUsuario(Long id, AlterarStatusRequest statusRequest) {
+        var usuarioBanco = usuarioRepository.findById(id).orElse(null);
+
+        if (usuarioBanco != null) {
+            usuarioBanco.setStatus(statusRequest.status());
+
+            usuarioRepository.save(usuarioBanco);
+
+            return true;
+        }
+
+        return false;
     }
 }

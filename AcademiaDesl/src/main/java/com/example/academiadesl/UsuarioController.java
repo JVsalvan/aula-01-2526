@@ -9,6 +9,7 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 
+import java.io.IOException;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
@@ -27,50 +28,48 @@ public class UsuarioController {
     protected void onSalvarButtonClick(ActionEvent event) throws Exception {
 
 
-        URL url = new URL("http://localhost:8080/usuario/adm");
+        try {
+            URL url = new URL("http://localhost:8080/usuarios/adm");
 
-        HttpURLConnection conn =(HttpURLConnection) url.openConnection();
-        conn.setRequestMethod("POST");
-        conn.setRequestProperty("Content-type","application/json");
+            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+            conn.setRequestMethod("POST");
+            conn.setRequestProperty("Content-type", "application/json");
 
-        conn.setDoOutput(true);
+            conn.setDoOutput(true);
+
+            String json = "{\n" +
+                    "  \"nome\": \""+ txtNome.getText() +"\",\n" +
+                    "  \"email\": \""+ txtEmail.getText() +"\",\n" +
+                    "  \"senha\": \""+ txtSenha.getText() +"\",\n" +
+                    "  \"secretKey\": \"hwichfdjbvlcdjrjvinfjd\" \n" +
+                    "}";
+
+            try(OutputStream os = conn.getOutputStream()){
+                os.write(json.getBytes());
+            }
+
+            var code = conn.getResponseCode();
+            System.out.println(code);
+            if (code == 200){
 
 
-        String json= "{\n" +
-                "  \"name\": \""+txtNome.getText()+"\",\n" +
-                "  \"email\": \""+txtEmail+"\",\n" +
-                "  \"senha\": \""+txtSenha+"\",\n" +
-                "}";
+                showMenssage("Sucesso ao salvar",Alert.AlertType.INFORMATION);
+
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("menu-view.fxml"));
+                Scene scene = new Scene(loader.load());
+
+                Stage stage = (Stage) ((Node)event.getSource()).getScene().getWindow();
+                stage.setScene(scene);
 
 
-        try(OutputStream os = conn.getOutputStream()){
-            os.write(json.getBytes());
+
+            }else {
+                showMenssage("Usuario e senha invalida",Alert.AlertType.INFORMATION);
+            }
+            conn.disconnect();
+        } catch (IOException e) {
+            System.out.println(e.getMessage());
         }
-
-        var code = conn.getResponseCode();
-        if (code == 200){
-
-
-            showMenssage("Sucesso ao salvar",Alert.AlertType.INFORMATION);
-
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("menu-view.fxml"));
-            Scene scene = new Scene(loader.load());
-
-            Stage stage = (Stage) ((Node)event.getSource()).getScene().getWindow();
-            stage.setScene(scene);
-
-
-
-        }else {
-            showMenssage("Usuario e senha invalida",Alert.AlertType.INFORMATION);
-
-
-
-        }
-        conn.disconnect();
-
-
-
 
 
     }

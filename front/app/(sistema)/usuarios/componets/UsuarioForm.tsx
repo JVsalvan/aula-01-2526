@@ -4,7 +4,7 @@ import Link from "next/link";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 
-import { Usuario, UsuarioFormProps } from "@/app/types/usuarios";
+import { UsuarioFormProps, UsuarioRequest } from "@/app/types/usuarios";
 import {
     alterarUsuario,
     salvarUsuario
@@ -16,37 +16,27 @@ export default function Usuarioform({
 
     const router = useRouter();
 
-    const [usuario, setUsuario] = useState<Usuario>(
+    const [usuario, setUsuario] = useState<UsuarioRequest>(
         usuariosExistente ||
-        new Usuario(null, '', '', "ATIVO")
+        { id: 0, nome: "", email: "", senha: "", cref: "" }
     );
 
     const handleChange = (
-        campo: 'name' | 'email',
+        campo: 'nome' | 'email' | 'senha' | 'cref',
         valor: string
     ) => {
 
-        setUsuario(prev =>
-            new Usuario(
-                prev.id,
-
-                campo === 'name'
-                    ? valor
-                    : prev.name,
-
-                campo === 'email'
-                    ? valor
-                    : prev.email,
-
-                prev.status
-            )
+        setUsuario(prev => ({
+            ...prev,
+            [campo]: valor
+        })
         );
     }
 
     const handlerSalvar = async (
         formData: FormData
     ) => {
-debugger
+        debugger
         if (usuariosExistente && usuariosExistente.id) {
 
             const codigo = await alterarUsuario(
@@ -111,10 +101,10 @@ debugger
                         <input
                             type="text"
                             required
-                            value={usuario.name}
+                            value={usuario.nome}
                             onChange={(e) =>
                                 handleChange(
-                                    'name',
+                                    'nome',
                                     e.target.value
                                 )
                             }
@@ -140,6 +130,47 @@ debugger
                                 )
                             }
                             placeholder="seu@email.com"
+                            className="bg-neutral-950 border border-neutral-800 text-white text-sm px-4 py-3 rounded-sm focus:outline-none focus:border-orange-500 focus:ring-1 focus:ring-orange-500/20 transition-all placeholder:text-neutral-700"
+                        />
+                    </div>
+
+                    <div className="flex flex-col gap-2">
+
+                        <label className="text-[10px] font-black text-neutral-600 uppercase tracking-[0.2em]">
+                            Senha
+                        </label>
+
+                        <input
+                            type="text"
+                            required
+                            value={usuario.senha}
+                            onChange={(e) =>
+                                handleChange(
+                                    'senha',
+                                    e.target.value
+                                )
+                            }
+                            className="bg-neutral-950 border border-neutral-800 text-white text-sm px-4 py-3 rounded-sm focus:outline-none focus:border-orange-500 focus:ring-1 focus:ring-orange-500/20 transition-all placeholder:text-neutral-700"
+                        />
+                    </div>
+
+                    <div className="flex flex-col gap-2">
+
+                        <label className="text-[10px] font-black text-neutral-600 uppercase tracking-[0.2em]">
+                            CREF
+                        </label>
+
+                        <input
+                            type="text"
+                            required
+                            value={usuario.cref}
+                            placeholder="12345-G/SC"
+                            onChange={(e) =>
+                                handleChange(
+                                    'cref',
+                                    e.target.value
+                                )
+                            }
                             className="bg-neutral-950 border border-neutral-800 text-white text-sm px-4 py-3 rounded-sm focus:outline-none focus:border-orange-500 focus:ring-1 focus:ring-orange-500/20 transition-all placeholder:text-neutral-700"
                         />
                     </div>

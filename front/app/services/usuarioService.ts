@@ -1,6 +1,6 @@
 'use client'
 
-import { Usuario } from "../types/usuarios";
+import { Usuario, UsuarioLogado, UsuarioRequest } from "../types/usuarios";
 import api from "./api";
 
 export async function buscarListaUsuarios(): Promise<Usuario[]> {
@@ -55,7 +55,7 @@ export async function buscarUsuarioPorId(
 }
 
 export async function salvarUsuario(
-    usuario: Usuario
+    usuario: UsuarioRequest
 ): Promise<number> {
 
     const dadosResult = await api.post<number>(
@@ -67,7 +67,7 @@ export async function salvarUsuario(
 }
 
 export async function alterarUsuario(
-    usuario: Usuario,
+    usuario: UsuarioRequest,
     id: number
 ): Promise<number> {
 
@@ -105,6 +105,7 @@ export async function alterarStatusUsua(
 
     return dadosResult.data;
 }
-export async function  buscarUsuarioLogado() : Promise<Usuario> {
-     return (await api.get<Usuario>('http://localhost:8080/usuarios/usuariologado')).data;
+
+export async function buscarUsuarioLogado(): Promise<UsuarioLogado> {
+    return (await api.get<UsuarioLogado>('/usuarios/usuariologado')).data;
 }

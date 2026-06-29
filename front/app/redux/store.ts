@@ -1,13 +1,12 @@
 import { configureStore } from "@reduxjs/toolkit";
-import { Academia } from "../types/academia";
 import authReducer from "./slices/authSlice"
-import academiaReducer from "./slices/academiaSlice"
+import dashboardReducer from "./slices/dashboardSlice"
 
 
 export const store = configureStore({
     reducer:{
         auth: authReducer,
-        academia : academiaReducer
+        dashboard: dashboardReducer
         
     }
 });

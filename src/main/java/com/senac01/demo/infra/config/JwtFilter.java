@@ -36,7 +36,7 @@ public class JwtFilter extends OncePerRequestFilter {
                 || path.startsWith("/usuarios/adm")
                 || path.startsWith("/swagger-resources")
                 || path.startsWith("/v3/api-docs")
-                || request.getMethod().startsWith("OPTIONS") )
+                || request.getMethod().equalsIgnoreCase("OPTIONS") )
         {
             filterChain.doFilter(request,response);
             return;
@@ -44,28 +44,26 @@ public class JwtFilter extends OncePerRequestFilter {
 
         String header = request.getHeader("Authorization");
 
-        if(header != null&& header.startsWith("Bearer ")){
-            String token = header.replace("Bearer ","");
+        if(header != null && header.startsWith("Bearer ")){
+            String token = header.substring(7);
 
-            //Validar TOken JWT
-            var retornotoken =tokenService.validarToken(token);
+            try {
+                //Validar TOken JWT
+                var usuarioLogado = tokenService.validarToken(token);
 
-            var usuarioLogado  = retornotoken;
+                UsernamePasswordAuthenticationToken usuario = new UsernamePasswordAuthenticationToken(
+                        usuarioLogado,
+                        null,
+                        usuarioLogado.getAuthorities()
+                );
 
-            UsernamePasswordAuthenticationToken usuario = new UsernamePasswordAuthenticationToken(
-                    usuarioLogado,
-                    null,
-                    usuarioLogado.getAuthorities()
-                        );
+                SecurityContextHolder.getContext().setAuthentication(usuario);
+            } catch (Exception e) {
+                response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                response.getWriter().write("Token invalido ou expirado");
+                return;
+            }
 
-            SecurityContextHolder.getContext().setAuthentication(usuario);
-
-
-
-        }else {
-            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-            response.getWriter().write("Token não informado ou invalido");
-            return;
         }
 
         filterChain.doFilter(request,response);

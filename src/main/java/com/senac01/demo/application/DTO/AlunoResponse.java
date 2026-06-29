@@ -8,7 +8,6 @@ public record AlunoResponse(
             String nome,
             String cpf,
             String telefone,
-            String email,
             String status
 
     ) {
@@ -18,9 +17,8 @@ public record AlunoResponse(
             this(
                     aluno.getId(),
                     aluno.getNome(),
-                    aluno.getCpf(),
+                    aluno.getCpf().toString(),
                     aluno.getTelefone(),
-                    aluno.getEmail(),
                     aluno.getStatus().toString()
             );
         }

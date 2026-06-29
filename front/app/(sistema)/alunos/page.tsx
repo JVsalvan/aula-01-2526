@@ -10,13 +10,18 @@ import {
     buscarListaAlunos
 } from "@/app/services/alunoService";
 
+import { useRouter } from "next/navigation";
+import { useDispatch } from "react-redux";
+import { AppDispatch } from "@/app/redux/store";
+import { invalidateDashboard } from "@/app/redux/slices/dashboardSlice";
+
 export default function Alunos() {
 
     const [alunos, setAlunos] = useState<Aluno[]>([]);
+    const router = useRouter();
+    const dispatch = useDispatch<AppDispatch>();
 
-    useEffect(() => {
-        carregarDados();
-    }, []);
+    
 
     const carregarDados = async () => {
 
@@ -34,6 +39,10 @@ export default function Alunos() {
         }
     };
 
+    useEffect(() => {
+        carregarDados();
+    }, []);
+
     const handlerAlterarStatus = async (
         aluno: Aluno
     ) => {
@@ -42,6 +51,7 @@ export default function Alunos() {
 
             await alterarStatusAluno(aluno);
 
+            dispatch(invalidateDashboard());
             carregarDados();
 
             alert(
@@ -128,7 +138,8 @@ export default function Alunos() {
 
                             <tr
                                 key={aluno.id}
-                                className="group hover:bg-neutral-900/40 transition-colors"
+                                className="group hover:bg-neutral-900/40 transition-colors cursor-pointer"
+                                onClick={() => router.push(`/alunos/${aluno.id}`)}
                             >
 
                                 <td className="p-4 font-mono text-neutral-500 text-xs">

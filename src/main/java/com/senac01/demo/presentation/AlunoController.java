@@ -1,7 +1,6 @@
 package com.senac01.demo.presentation;
 
-import com.senac01.demo.application.DTO.AlterarStatusRequest;
-import com.senac01.demo.application.DTO.AlunoResponse;
+import com.senac01.demo.application.DTO.*;
 import com.senac01.demo.application.services.AlunoService;
 import com.senac01.demo.domain.entites.Aluno;
 import com.senac01.demo.domain.repository.AlunoRepository;
@@ -16,9 +15,6 @@ import java.util.List;
 public class AlunoController {
 
     @Autowired
-    private AlunoRepository alunoRepository;
-
-    @Autowired
     private AlunoService alunoService;
 
     @GetMapping
@@ -31,7 +27,7 @@ public class AlunoController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<AlunoResponse>
+    public ResponseEntity<AlunoDetalhesResponse>
     buscarPorId(@PathVariable Long id) {
 
         return ResponseEntity.ok(
@@ -41,10 +37,10 @@ public class AlunoController {
 
     @PostMapping
     public ResponseEntity<Long>
-    salvar(@RequestBody Aluno aluno) {
+    salvar(@RequestBody AlunoRequest aluno) {
 
         return ResponseEntity.ok(
-                alunoRepository.save(aluno).getId()
+                alunoService.salvar(aluno)
         );
     }
 
@@ -68,21 +64,31 @@ public class AlunoController {
             @RequestBody AlterarStatusRequest statusRequest
     ) {
 
-        var alunoBanco =
-                alunoRepository.findById(id).orElse(null);
+        boolean result = alunoService.alterarStatus(id, statusRequest);
 
-        if (alunoBanco == null) {
-            return ResponseEntity.notFound().build();
-        }
+        return result
+                ? ResponseEntity.ok("Atualizado com sucesso!")
+                : ResponseEntity.notFound().build();
+    }
 
-        alunoBanco.setStatus(
-                statusRequest.status()
-        );
+    @PutMapping("/{id}/renovar")
+    public ResponseEntity<?> renovarPlano(@PathVariable Long id) {
+        alunoService.renovarPlano(id);
+        return ResponseEntity.ok("Plano renovado com sucesso!");
+    }
 
-        alunoRepository.save(alunoBanco);
+    @PutMapping("/{id}/cancelar-plano")
+    public ResponseEntity<?> cancelarPlano(@PathVariable Long id) {
+        alunoService.cancelarPlano(id);
+        return ResponseEntity.ok("Plano cancelado com sucesso!");
+    }
 
-        return ResponseEntity.ok(
-                "Atualizado com sucesso!"
-        );
+    @PutMapping("/{id}/trocar-plano")
+    public ResponseEntity<?> trocarPlano(
+            @PathVariable Long id,
+            @RequestBody AlterarPlanoRequest request
+    ) {
+        alunoService.trocarPlano(id, request.novoPlanoId());
+        return ResponseEntity.ok("Plano alterado com sucesso!");
     }
 }

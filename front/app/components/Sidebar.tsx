@@ -3,17 +3,31 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
-export default function Sidebar() {
+interface SidebarProp {
+  role: string
+}
+
+export default function Sidebar({ role }: SidebarProp) {
   const pathname = usePathname();
   const YEAR = new Date().getFullYear();
 
-  const menuItems = [
+  interface MenuItem {
+    label: string;
+    href: string;
+  }
+
+  interface MenuGroup {
+    group: string;
+    roles?: string[]; 
+    items: MenuItem[];
+  }
+
+  const menuItems: MenuGroup[] = [
     {
       group: "Gestão Operacional",
       items: [
-        { label: 'Dashboard', href: '/dashoboard' },
-        { label: 'Gestão de Usuarios', href: '/usuarios' },
-        { label: 'Academias', href: '/academia' },
+        { label: 'Dashboard', href: '/dashboard' },
+        { label: 'Gestão de Usuarios', href: '/usuarios', roles: ["ROLE_ADMIN"] },
       ]
     },
     {
@@ -21,10 +35,15 @@ export default function Sidebar() {
       items: [
         { label: 'Alunos', href: '/alunos' },
         { label: 'Planos', href: '/planos' },
-        { label: 'Matrículas', href: '/matriculas' },
       ]
     }
   ];
+
+  const visibleMenuItems = menuItems.map(section => ({
+    ...section,
+    items: section.items.filter(item => !item.roles || item.roles.includes(role))
+  })).filter(section => section.items.length > 0);
+
 
   return (
     <aside className="w-64 min-h-screen bg-neutral-950 border-r border-neutral-900 flex flex-col shrink-0 font-sans">
@@ -42,7 +61,7 @@ export default function Sidebar() {
 
         {/* --- NAVEGAÇÃO DINÂMICA --- */}
         <nav className="space-y-12">
-          {menuItems.map((section) => (
+          {visibleMenuItems.map((section) => (
             <div key={section.group}>
               <p className="text-[10px] font-black text-neutral-600 uppercase tracking-[0.2em] mb-6 border-b border-neutral-900 pb-2">
                 {section.group}

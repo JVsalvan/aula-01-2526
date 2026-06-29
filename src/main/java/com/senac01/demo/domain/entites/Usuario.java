@@ -4,6 +4,7 @@ package com.senac01.demo.domain.entites;
 import com.senac01.demo.application.DTO.UsuarioAdmRequest;
 import com.senac01.demo.application.DTO.UsuarioRequest;
 import com.senac01.demo.domain.enums.EnumStatusUsuario;
+import com.senac01.demo.domain.valueobject.CREF;
 import jakarta.annotation.Nullable;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -33,14 +34,18 @@ public class Usuario implements UserDetails {
 
     private String senha;
 
+    private CREF cref;
+
     private String role;
 
     private EnumStatusUsuario status = EnumStatusUsuario.ATIVO;
+
 
     public Usuario(UsuarioRequest usuario) {
         this.email =usuario.email();
         this.nome = usuario.nome();
         this.senha = usuario.senha();
+        this.cref = new CREF(usuario.cref());
         this.role = "ROLE_USER";
     }
 
@@ -50,8 +55,6 @@ public class Usuario implements UserDetails {
         this.senha = usuario.senha();
         this.role = "ROLE_ADMIN";
     }
-
-
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

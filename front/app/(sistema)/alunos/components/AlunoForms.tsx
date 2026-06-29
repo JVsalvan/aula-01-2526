@@ -2,10 +2,14 @@
 "use client"
 
 import Link from "next/link";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
+import { useDispatch } from "react-redux";
+import { AppDispatch } from "@/app/redux/store";
+import { invalidateDashboard } from "@/app/redux/slices/dashboardSlice";
 
 import { Aluno, AlunoFormProps } from "@/app/types/alunos";
+import { planoService, Plano } from "@/app/services/planoService";
 
 import {
     alterarAluno,
@@ -17,6 +21,7 @@ export default function AlunoForm({
 }: AlunoFormProps) {
 
     const router = useRouter();
+    const dispatch = useDispatch<AppDispatch>();
 
     const [aluno, setAluno] = useState<Aluno>(
         alunoExistente ||
@@ -26,12 +31,28 @@ export default function AlunoForm({
             '',
             '',
             '',
-            'ATIVO'
+            'ATIVO',
+            undefined
         )
     );
 
+    const [planos, setPlanos] = useState<Plano[]>([]);
+
+    const carregarPlanos = async () => {
+            try {
+                const lista = await planoService.listarTodos();
+                setPlanos(lista.filter(p => p.ativo));
+            } catch (error) {
+                console.error("Erro ao carregar planos", error);
+            }
+        };
+
+    useEffect(() => {
+        carregarPlanos();
+    }, []);
+
     const handleChange = (
-        campo: 'nome' | 'cpf' | 'telefone' | 'email',
+        campo: 'nome' | 'cpf' | 'telefone' | 'dataNascimento' | 'planoId',
         valor: string
     ) => {
 
@@ -51,11 +72,15 @@ export default function AlunoForm({
                     ? valor
                     : prev.telefone,
 
-                campo === 'email'
+                campo === 'dataNascimento'
                     ? valor
-                    : prev.email,
+                    : prev.dataNascimento,
 
-                prev.status
+                prev.status,
+
+                campo === 'planoId'
+                    ? parseInt(valor)
+                    : prev.planoId
             )
         );
     };
@@ -71,6 +96,7 @@ export default function AlunoForm({
                     alunoExistente.id
                 );
 
+                dispatch(invalidateDashboard());
                 alert(
                     "Aluno atualizado! Código: " +
                     codigo
@@ -82,8 +108,9 @@ export default function AlunoForm({
                     aluno
                 );
 
+                dispatch(invalidateDashboard());
                 alert(
-                    "Aluno salvo! Código: " +
+                    "Aluno saved! Código: " +
                     codigo
                 );
             }
@@ -97,6 +124,8 @@ export default function AlunoForm({
             );
         }
     };
+
+    console.log(planos)
 
     return (
 
@@ -188,17 +217,36 @@ export default function AlunoForm({
                         </label>
 
                         <input
-                            type="email"
-                            value={aluno.email}
+                            type="date"
+                            value={aluno.dataNascimento}
                             onChange={(e) =>
                                 handleChange(
-                                    'email',
-                                    e.target.value
+                                    'dataNascimento',
+                                    e.target.value.toString()
                                 )
                             }
                             className="bg-neutral-950 border border-neutral-800 text-white text-sm px-4 py-3 rounded-sm"
                         />
 
+                    </div>
+
+                    <div className="flex flex-col gap-2">
+                        <label className="text-[10px] font-black text-neutral-600 uppercase tracking-[0.2em]">
+                            Plano
+                        </label>
+                        <select
+                            value={aluno.planoId || ""}
+                            onChange={(e) => handleChange('planoId', e.target.value)}
+                            className="bg-neutral-950 border border-neutral-800 text-white text-sm px-4 py-3 rounded-sm"
+                            disabled={!!alunoExistente}
+                        >
+                            <option value="">Selecione um plano</option>
+                            {planos.map(plano => (
+                                <option key={plano.id} value={plano.id}>
+                                    {plano.descricao} - R$ {plano.valor.toFixed(2)}
+                                </option>
+                            ))}
+                        </select>
                     </div>
 
                 </div>

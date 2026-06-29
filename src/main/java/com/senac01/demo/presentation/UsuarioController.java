@@ -1,9 +1,7 @@
 package com.senac01.demo.presentation;
 
 
-import com.senac01.demo.application.DTO.AlterarStatusRequest;
-import com.senac01.demo.application.DTO.LoginRequest;
-import com.senac01.demo.application.DTO.UsuarioResponse;
+import com.senac01.demo.application.DTO.*;
 import com.senac01.demo.domain.entites.Usuario;
 import com.senac01.demo.domain.repository.UsuarioRepository;
 import com.senac01.demo.application.services.UsuarioService;
@@ -25,8 +23,6 @@ public class UsuarioController {
     @Autowired
     private UsuarioService usuarioService;
 
-    @Autowired
-    private UsuarioRepository usuarioRepository;
 
 
     @GetMapping
@@ -37,19 +33,6 @@ public class UsuarioController {
     }
 
 
-    public boolean ValidaUsuarioSenha(LoginRequest loginRequest) {
-        try {
-
-            return usuarioRepository
-                    .existsUsuarioByEmailContainingAndSenha(
-                            loginRequest.email(),
-                            loginRequest.senha()
-                    );
-
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-    }
 
 
     @GetMapping("/{id}")
@@ -63,19 +46,16 @@ public class UsuarioController {
 
     @PostMapping
     @Operation(summary = "Criar usuario",description = "Metodo resposavel por criar usuário")
-    public ResponseEntity<Long> salvar(@RequestBody Usuario usuario) {
+    public ResponseEntity<Long> salvar(@RequestBody UsuarioRequest usuario) {
 
-        return ResponseEntity.ok(usuarioRepository.save(usuario).getId());
+        return ResponseEntity.ok(usuarioService.SalvarUsuario(usuario));
     }
 
 
     @PostMapping("/adm")
     @Operation(summary = "Criar usuario adm",description = "Metodo resposavel por criar usuário")
-    public ResponseEntity<Long> salvarAdm(@RequestBody Usuario usuario) {
-
-        usuario.setRole("ROLE_ADMIN");
-
-        return ResponseEntity.ok(usuarioRepository.save(usuario).getId());
+    public ResponseEntity<Long> salvarAdm(@RequestBody UsuarioAdmRequest usuario) {
+        return ResponseEntity.ok(usuarioService.SalvarUsuarioAdm(usuario));
     }
 
 
@@ -92,28 +72,20 @@ public class UsuarioController {
 
 
     @PutMapping("/{id}/AlterarStatus")
-    public ResponseEntity<?> AlterarStatus(@PathVariable Long id,
-                                           @RequestBody AlterarStatusRequest statusRequest) {
+    public ResponseEntity<?> AlterarStatus(@PathVariable Long id, @RequestBody AlterarStatusRequest statusRequest) {
 
-        var usuarioBanco = usuarioRepository.findById(id).orElse(null);
+        var alterarStatusResult = usuarioService.AlterarStatusUsuario(id, statusRequest);
 
-        if (usuarioBanco != null) {
-
-            usuarioBanco.setStatus(statusRequest.status());
-
-            usuarioRepository.save(usuarioBanco);
-
-            return ResponseEntity.ok("Atualizado com sucesso!");
-        }
-
-        return ResponseEntity.notFound().build();
+        return alterarStatusResult
+                ? ResponseEntity.ok("Atualizado com sucesso!")
+                : ResponseEntity.notFound().build();
     }
 
 
     @GetMapping("/usuariologado")
     @Operation(summary = "Consulta usuario logado",
             description = "busca usuario da sessãoo")
-    public ResponseEntity<Usuario> buscarUsarioLogado(Authentication authentication) {
+    public ResponseEntity<UsuarioLogadoResponse> buscarUsarioLogado(Authentication authentication) {
 
         Usuario usuario = (Usuario) authentication.getPrincipal();
 
